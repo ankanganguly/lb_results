@@ -1,0 +1,390 @@
+\documentclass[12pt]{article}
+\usepackage{enumerate}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{amsthm}
+\usepackage{color}
+\usepackage{mathrsfs}
+\usepackage{fullpage}
+\usepackage{commath}
+\usepackage{graphicx}
+\usepackage{pdfcomment}
+%\usepackage{coffee4}
+\usepackage{lipsum}
+\usepackage{showkeys}
+\usepackage{algorithmicx}
+\usepackage{algpseudocode}
+\usepackage{verbatim}
+\usepackage{longtable}
+
+%General Shorthand Macros
+\newcommand{\skipLine}{\vspace{12pt}}
+\newcommand{\mb}{\mathbb}
+\newcommand{\mc}{\mathcal}
+\newcommand{\ms}{\mathscr}
+\newcommand{\ra}{\rightarrow}
+\newcommand{\ov}{\overline}
+\newcommand{\os}{\overset}
+\newcommand{\un}{\underline}
+\newcommand{\te}{\text}
+\newcommand{\ep}{\epsilon}
+\newcommand{\tr}{\textcolor{red}}
+\newcommand{\tb}{\textcolor{blue}}
+\newcommand{\tg}{\textcolor{green}}
+\newcommand{\labe}[1]{\tr{\texttt{Label: #1}}}
+\newcommand{\tbs}{\textbackslash}
+\newcommand{\purpose}{\textbf{Purpose: }}
+\newcommand{\pfsum}{\textbf{Proof Summary: }}
+\newcommand{\usein}{\textbf{Used in: }}
+\newcommand{\app}{\textbf{Applies: }}
+\newcommand{\ind}{\hspace{24pt}}
+\newcommand{\lin}{\rule{\linewidth}{0.4 pt}}
+\newcommand{\pr}{\mb{P}}							%probability
+\newcommand{\ex}[1]{\mb{E}\left[#1\right]}			%expectation
+\newcommand{\exmu}[2]{\mb{E}^{#1}\left[#2\right]}	%exp wrt a measure
+\newcommand{\deq}{\overset{\text{(d)}}{=}}			%equal in dist
+\newcommand{\defeq}{:=}								%definition equal
+\newcommand{\msr}{\mc{M}}							%space of measures
+\newcommand{\pmsr}{\mc{P}}							%space of pmsrs
+\newcommand{\cad}{\mb{D}}							%Cadlag space
+\newcommand{\argmin}{\te{arg}\min}
+
+%The model
+\newcommand{\Xf}{X}									%Full process
+\newcommand{\vcomp}[1]{_{#1}}						%v component
+\newcommand{\tme}[1]{(#1)}							%time
+\newcommand{\tmi}[1]{#1}							%time interval
+\newcommand{\stte}{\mc{X}}							%state space
+
+\newcommand{\arr}{\lambda}							%arrival rate
+\newcommand{\poiss}{N}								%Poisson process
+\newcommand{\poissv}[1]{_{#1}}						%v comp of Poisson
+\newcommand{\poisso}[1]{^{#1}}						%Other P modifier
+
+\newcommand{\neigh}[1]{\partial_{#1}}
+\newcommand{\cl}[1]{\ov{#1}}
+
+\newcommand{\IG}{\mc{L}}
+
+\newcommand{\ev}[1]{\ep^{#1}}
+\newcommand{\para}[1]{^{#1}}
+\renewcommand{\root}{\mathbf{0}}
+
+\newcommand{\leb}{\te{Leb}}
+\newcommand{\uni}{m}
+\newcommand{\inter}[1]{#1^I}
+\newcommand{\neighI}[1]{\partial^I_{#1}}
+
+%Abstraction
+
+\newcommand{\dneigh}[1]{\partial^2_{#1}}
+\renewcommand{\d}{D}
+
+%Statement
+\newcommand{\intA}{A^\mathrm{o}}
+
+%Existence
+\newcommand{\pmap}{\Lambda}
+\newcommand{\proj}{\pi}
+\newcommand{\rt}{\tau}
+\renewcommand{\mark}{\kappa}
+\newcommand{\Xg}{Y}
+\newcommand{\ratee}{\Gamma}
+\newcommand{\rp}{P}
+\newcommand{\F}{\mc{F}}
+\newcommand{\alt}[1]{\tilde{#1}}
+\newcommand{\cratee}{\alt{\ratee}}
+\newcommand{\law}{\te{Law}}
+\newcommand{\Xh}{Z}
+
+
+
+
+
+
+\newtheorem{thms}{Theorem}[section]
+\newtheorem{conj}[thms]{Conjecture}
+\newtheorem{prop}[thms]{Proposition}
+\newtheorem{coro}[thms]{Corollary}
+\newtheorem{lem}[thms]{Lemma}
+%\newtheorem{sublem}{Sublemma}[lem]
+\newtheorem{defn}[thms]{Definition}
+\newtheorem{assu}[thms]{Assumption}
+
+\setlength{\parindent}{0pt}
+
+\begin{document}
+
+\title{Load Balancing Results (Working Title)}
+\author{Ankan Ganguly}
+
+\maketitle
+
+Remark: This document uses the results from the derivation of the local approximation on trees. I will refer to this derivation as the main paper for now.
+
+\skipLine
+
+Remark: In this paper I mostly work with locally finite graphs. However, I proved all my results in the main paper for bounded degree graphs. I may need to strengthen the assumptions of this paper to bounded degree. However, since we are working with local convergence, all results that hold for locally finite graphs should extend to bounded degree graphs (the one possible exception would be well-posedness results).
+
+\section{The model}
+\label{mod}
+
+The load balancing model we are considering describes a queuing network for which jobs arrive at each queue at rate \(\arr\) independently. Each job is processed in Exp(1) time independently of all other jobs. Upon arrival to a queue, each job checks the size of its queue and all neighboring queues and goes to the shortest queue. If there is a tie, the job chooses between queues uniformly at random. We can also consider a variation in which each job checks all queues within a distance \(k\) of its own queue, however for now we will restrict to the \(k=1\) case.
+
+\ind We can define this rigorously as well. Let \(\stte = \mb{N}_0 = \{0,1,\dots\}\). Let \(G = (V,E,\root)\) be an at most countable, connected and locally finite rooted graph. We will let this represent the queuing network. Then let \(\inter{G} = (V,\inter{E},\root)\), where \(\inter{E} = \{(u,v) \in V^2: 0 < d_G(u,v)\leq 2\}\). This is the interaction network. For any \(v \in V\), let \(\neigh{v}\) be the neighbors of \(v\) in \(G\). Let \(\cl{v} = \neigh{v}\cup \{v\}\). Let \(\neighI{v}\) be the neighbors of \(v\) in \(\inter{G}\). Let \(\{\poiss\poissv{v}:v \in V\}\) be a sequence of i.i.d. unit rate Poisson processes on \(\mb{R}^2\).
+
+\ind Let \(\Xf\) be a \(\stte^V\)-valued process. We let \(\Xf\vcomp{v}\tme{t}\) denote the size of queue \(v\) at time \(t\). Then the above description of the load-balancing model can be characterized by the following equation:
+
+\begin{align}
+\Xf\vcomp{v}\tme{t} &= \Xf\vcomp{v}\tme{0} + \sum_{u \in \cl{v}} \int_{(0,t]}\int_{(0,\arr + 1]} \mb{I}_{r \leq r\vcomp{v}\tme{s-}} - \mb{I}_{\Xf\vcomp{v}\tme{s-} > 0}\mb{I}_{\arr < r \leq \arr+1}\,\poiss\poissv{v}(dr,ds)\label{mod::Xf}\\
+r\vcomp{v}\tme{t} &= \arr\frac{\mb{I}_{\Xf\vcomp{v}\tme{t} = \min_{w \in \cl{u}} \Xf\vcomp{w}\tme{t}}}{|\{\argmin_{w \in \cl{u}} \Xf\vcomp{w}\tme{t}\}|}\nonumber
+\end{align}
+
+Let \(\ev{v}\) be the vector in \(\stte^V\) such that \(\ev{v}\vcomp{u} = \delta_{u,v}\). I will refer to this as the standard basis on \(\stte^V\).
+
+\begin{thms}
+Suppose that \(\sup_{v \in V} \ex{\Xf\vcomp{v}\tme{0}} < \infty\). Then equation \eqref{mod::Xf} has a unique strong solution \(\Xf\). Furthermore, \(\Xf\) is a well-defined Feller Process with infinitesimal generator,
+
+\begin{align}
+\IG f(x) &= \sum_{v \in V}\arr\frac{\mb{I}_{x\vcomp{v} = \min_{w \in \cl{u}} x\vcomp{w}}}{|\{\argmin_{w \in \cl{u}} x\vcomp{w}\}|}[f(x + \ev{v}) - f(x)] + \mb{I}_{x\vcomp{v} > 0}[f(x-\ev{v}) - f(x)]\nonumber\\
+&:= \sum_{v \in V}r\vcomp{v}\para{x}[f(x + \ev{v}) - f(x)] + \mb{I}_{x\vcomp{v} > 0}[f(x-\ev{v}) - f(x)]\label{mod::IG}
+\end{align}
+
+and core, \tr{to be found later}.
+\label{mod::Feller}
+\end{thms}
+\begin{proof}
+\tr{TODO}
+
+First apply standard arguments to show unique existence of a solution. Ideally, there is a reference that does this for us. The basic idea is to apply results in Ligget or Kurts on the well-posedness of Feller processes. The infinitesimal generator can be constructed directly. I haven't paid much attention yet to deriving a core.
+\end{proof}
+
+\begin{coro}
+Let \(\leb\) be the Lebesgue measure on \(\mb{R}^2\), and let \(\uni\) be the uniform measure on \(\{-1,1\}\). Let \(\poiss\poissv{v}\) be a Poisson process on \(\mb{R}^2\times \{-1,1\}\) with intensity \(\leb \otimes \uni\). The unique strong solution to equation \eqref{mod::Xf} is equal in distribution to the unique strong solution to,
+
+\begin{equation}
+\Xf\vcomp{v}\tme{t} = \Xf\vcomp{v}\tme{0} + \int_{(0,t]}\int_{(0,\arr+1]} \int_{\{-1,1\}} b\mb{I}_{b=1,r \leq r\vcomp{v}\tme{s-}}\mb{I}_{b=-1,r \leq \mb{I}_{\Xf\vcomp{v}\tme{s-} > 0}}\,\poiss\poissv{v}(db,dr,ds).
+\label{mod::GenXf}
+\end{equation}
+\label{mod::General}
+\end{coro}
+\begin{proof}
+\tr{TODO}
+
+By applying the arguments in Theorem \ref{mod::Feller}, it should be straightforward to show that equation \eqref{mod::GenXf} has a unique solution, and the solution is Feller with infinitesimal generator given by equation \eqref{mod::IG}. Since both processes have the same infinitesimal generator and starting condition, they must be equal in distribution.
+
+\tr{Maybe place this in the next section.}
+\end{proof}
+
+Our main interest is the case in which \(G\) is finite, large and approximately a regular tree. We can approximate this by analyzing infinite regular trees.
+
+\begin{defn}
+A graph isomorphism is a bijection, \(\psi: V \ra V'\), between two rooted graphs \(G = (V,E,\root)\) and \(G' = (V',E',\root')\) such that for any \(u,v \in V\), \((\psi(u),\psi(v)) \in E'\) iff \((u,v) \in E\).
+\label{mod::iso}
+\end{defn}
+
+\begin{defn}
+The \(n\)-truncation of a rooted graph \(G = (V,E,\root)\) is the graph \(G_n(V_n,E_n,\root)\) given by,
+
+\[V_n = \{v \in V: d_G(v,\root) \leq n\} \te{ and } E_n = \{(u,v) \in E: u,v \in V_n\}.\]
+\label{mod::trunc}
+\end{defn}
+
+\begin{defn}
+Let \(G^n = (V^n,E^n,\root^n)\) be a sequence of rooted graphs. We say \(G^n \ra G = (V,E,\root)\) locally if for every \(k\in \mb{N}\), there exists an \(n_k \in \mb{N}\) such that for all \(n \geq n_k\), there exists a graph isomorphism \(\psi_{n,k}: V^n_k \ra V_k\), where \(V^n_k\) is the \(k\)th truncation of \(V^n\) and \(V_k\) is the \(k\)th truncation of \(V\).
+\label{mod::locconv}
+\end{defn}
+
+\begin{defn}
+Let \(G^n\) be a sequence of countable, connected, locally finite rooted graphs converging locally to a countable, connected, locally finite graph \(G\). Let \(\Xf^n\) be a \(\stte^{V^n}\)-valued process. Let \(\Xf\) be a \(\stte^V\)-valued process. 
+
+\ind For every \(k\in \mb{N}\), \(n \geq n_k\) and \(v \in V_k\), let \(\Xf^{n,k}_v = \Xf^n_{\psi_{n,k}^{-1}(v)}\). Then \(\Xf^n\) converges locally weakly to \(\Xf\) if for every \(k \in \mb{N}\),
+
+\[\Xf^{n,k} \os{n\ra\infty}{\Rightarrow} \Xf_{V_k}.\]
+\label{mod::locweak}
+\end{defn}
+
+\begin{thms}
+If \(G^n\) be a sequence of countable, connected, locally finite rooted graphs converging locally to \(G\), which is also connected, locally finite and rooted. Suppose \(\Xf^n\) is the unique strong solution to equation \eqref{mod::GenXf} with respect to the topology of \(G^n\). Suppose \(\Xf\) is the unique strong solution to equation \eqref{mod::GenXf} with respect to the topology of \(G\). Then \(\Xf^n \ra \Xf\) locally weakly.
+\label{lblocweak}
+\end{thms}
+\begin{proof}
+\tr{I should be calling this a conjecture for now.}
+\end{proof}
+
+\section{Abstraction}
+\label{abs}
+
+Both equations \eqref{mod::GenXf} and \eqref{mod::Xf} are actually fairly difficult to work with. The topology induced on \(\inter{G}\) is also complicated. Instead, it is better to work with a certain level of abstraction.
+
+\begin{assu}
+\(G\) is a countable, connected, locally finite rooted graph.
+\label{abs::basics}
+\end{assu}
+
+This is the fundamental assumption we are working with. We will not consider any graphs or processes on graphs that do not satisfy assumption \ref{abs::basics}. Suppose assumption \ref{abs::basics} holds for \(G\) and \(\Xf\) defined by equation \eqref{mod::GenXf}. If \(G\) is also of bounded degree, then \(\Xf\) satisfies Assumption 2.1 of the main paper. 
+
+\begin{defn}
+For any graph \(G = (V,E)\), a self-isomorphism is any mapping \(\psi: V \ra V\) such that \((u,v) \in E\) if and only if \((\psi(u),\psi(v)) \in E\). If \(G\) is a rooted graph, it is possible that \(\psi(\root) \neq \root\).
+\label{abs::selfiso}
+\end{defn}
+
+\begin{defn}
+For any set \(U \subset V\), the double neighborhood of \(U\) is given by,
+
+\[\dneigh{U} = \{v \in V\setminus U: \min_{u\in U} d_G(u,v) \leq 2\}.\]
+\label{abs::dneigh}
+\end{defn}
+
+Now we can define the \tr{(conjectured)} class of graphs on which the local approximation is defined.
+
+\begin{assu}
+\(G\) is said to be admissible if it satisfies assumption \ref{abs::basics} and there exists a finite set \(A \subset V\) such that,
+
+\begin{itemize}
+\item There exists a finite partition \(\{B_i\}_{i=1}^\ell\) of \(A^c\).
+
+\item \(\dneigh{B_i} \subseteq A\) for all \(i\).
+
+\item Let \(C_i = B_i\cap \neigh{A}\). For any \(i \neq j\), there exists a self-isomorphism of \(G\) \(\phi_{i,j}\) such that \(\phi_{i,j}(A) = \phi_{i,j}(A)\), \(\phi_{i,j}(C_i) = C_j\) and \(\phi_{i,j}(\dneigh{B_i}) = \dneigh{B_j}\).
+
+\item There exists a set \(D \subseteq A\) such that for each \(i\), there exists a self-isomorphism of \(G\), \(\phi_i\), such that \(\phi_i(C_i\cup \dneigh{B_i}) = D\).
+
+\item If we let \(A^{(1)} = A\cup \left(\bigcup_{i=1}^\ell C_i\right)\). Then \(A^{(1)}\) is also admissible with partition \(\{B^{(1)}_i\}_{i=1}^{\ell'}\). Let \(C^{(1)}_i = B^{(1)}_i\cap \neigh{A^{(1)}}\). Then for any \(i \leq \ell\) and \(i' \leq \ell'\), there exists a self-isomorphism \(\phi^{(1)}_{i,i'}\) such that \(\phi^{(1)}_{i,i'}(C_i) = C^{(1)}_{i'}\) and \(\phi^{(1)}_{i,i'}(B_i\cap\neigh{A}) = B^{(1)}_{i'}\cap \neigh{A^{(1)}}\). As a result, \(D^{(1)} = D\). Notice that this is a recursive definition.
+\end{itemize}
+
+The set \(A\) is called an admissible set. \(\{B_i\}\) will be referred to as the set of branches of \(A\). \(\{C_i\}\) will be called the boundary nodes of \(A\). \(D\) is the template set.
+\label{abs::admissible}
+\end{assu}
+
+\tr{Right now I'm just adding assumptions whenever I need them (after making sure load-balancing satisfies them).}
+
+The definition of an admissible set is designed ensure a high enough level of symmetry for the arguments in the main paper to hold in this case as well. \tr{Interestingly enough, if this assumption suffices to prove the local approximation, then we will be able to understand the dynamics of a typical class of particles even when such particles are split into heterogeneous classes so long as they are distributed with a high level of symmetry. This will be especially useful if we consider random graphs later.}
+
+\begin{thms}
+Let \(G\) be a \(\d\)-Cayley tree. Then \(\inter{G}\) (see 2nd paragraph of section \ref{mod}) is admissible. Furthermore, the set \(A = V_3\) is an admissible set (see definition \ref{mod::trunc}).
+\end{thms}
+\begin{proof}
+\tr{I don't have a proof yet, but these conditions were constructed with load-balancing in mind, and I have a roughly hand-drawn diagram showing \(A,B,C,D\) for load-balancing on the \(\d\)-Cayley tree.}
+
+\includegraphics[scale=0.5]{lb_to_general}
+
+Admittedly I drew this mostly for myself, so it's not very legible. I'll write a proper proof with clearer images later.
+\end{proof}
+
+\begin{prop}
+Let \(G\) satisfy assumption \ref{abs::basics}. Let \(X^G\)
+\end{prop}
+
+
+\section{Conditional Independence}
+\label{CI}
+
+The results from the main paper are almost sufficient. I just need to extend them to the infinite state space case. Only the arguments of Lemma 4.3 rely on the process having a finite state space, so I only have to redo that one.
+
+\section{Statement of the Local Approximation}
+\label{Main}
+
+Let \(G\) be an admissible graph with admissible set \(A\), partitions \(\{B_i\}_{i=1}^\ell\), boundary set \(\{C_i\}_{i=1}^\ell\) and template set \(D\).
+
+\begin{assu}
+Let \(\Xf\) be a c\`adl\`ag \(\stte^V\)-valued process with some bound on each node's total jump rate and some bound to prevent any node from exploding in finite time. Define,
+
+\begin{equation}
+\Xf\vcomp{v}\tme{t} = \Xf\vcomp{v}\tme{0} + \sum_{k \in \stte}\int_{(0,t]}\int_{(0,C]} k\mb{I}_{r\leq r_v^k(\Xf\vcomp{\cl{v}}\tme{s-})} \poiss\poissv{v}(dr,ds).
+\label{Main::full}
+\end{equation}
+
+where \(\poiss\poissv{v}\) is a unit rate Poisson process on \(\mb{R}^2\), and \(0 \leq r_v^k \leq C\) and \(r_v^k\) satisfies some other conditions (measurability and symmetry).
+\label{Main::Xassu}
+\end{assu}
+
+
+\begin{thms}
+Suppose assumption \ref{Main::Xassu} holds. Let \(\intA = \{v \in A: \neigh{v} \subseteq A\}\). Consider the following equations:
+
+\begin{align}
+\Xg\vcomp{v}\tme{t} &= 
+\begin{cases}
+\Xg\vcomp{v}\tme{t} + \sum_{k \in \stte} \int_{[0,t)}\int_{(0,C]} k\mb{I}_{r\leq r^k_v(\Xg\vcomp{\cl{v}}\tme{s-})}\,\poiss\poissv{v}(dr,ds) & \te{ if } v \in \intA\\
+\Xg\vcomp{v}\tme{0} + \sum_{k \in \stte} \int_{[0,t)}\int_{(0,C]} k\mb{I}_{r\leq \alt{r}^k_v(\Xg\vcomp{\cl{v}\cap A}\tmi{[0,s)}}\,\poiss\poissv{v}(dr,ds) &\te{ otherwise}
+\end{cases}\label{Main::local}\\
+\alt{r}^k_v(x_{\cl{v}\cap A}[0,t)) &= \exmu{\Xg \sim \mu}{r^k_{\phi_i(v)}(\Xg\vcomp{A}\tme{t-})|\Xg\vcomp{\phi_i(\cl{v}\cap A)}\tmi{[0,t)} = x\vcomp{\cl{v}\cap A}\tmi{[0,t)}}\label{Main::CI}\\
+\mu &= \law(\Xg).\label{Main::fixed}
+\end{align}
+
+Equations \eqref{Main::local}, \eqref{Main::CI} and \eqref{Main::fixed} have a unique weak solution in law, and the law of this solution is the marginal distribution of \(\law(\Xf)\) on \(\stte^A\).
+\end{thms}
+
+\section{Proof of Existence}
+\label{Ex}
+
+Just like in the regular tree case, the idea of the proof is to convert \(\Xf\) into a point process and use a well-known filtration result for point processes.
+
+\ind In this section, we assume \(G\) is admissible. Let \(A,\{B_i\}_{i=1}^\ell, \{C_i\}_{i=1}^\ell\) and \(D\) be defined as in definition \ref{abs::admissible}.
+
+\ind Let \(W\subseteq V\). \(\proj^W_T\) map a c\`adl\`ag path on \(\stte^U\) to its component parts on \(\stte^W\) for any \(U \supseteq W\). That is, if \(\Xg\) is a c\`adl\`ag, \(\stte^U\)-valued process, then \((\proj^W_T(\Xg))\vcomp{v} = \Xg\vcomp{v}\) for all \(v \in W\). The \(T\) denotes the time interval on which \(\proj^W_T(\Xg)\) is defined.
+
+\begin{defn}
+Let \(U\subseteq V\) and suppose \(\Xg\) is a \(\stte^U\)-valued c\`adl\`ag stochastic process adapted to its own natural filtration. Fix some \(0 < T < \infty\). Then define the marked point process \(\pmap(\Xg)\) as a random measure on \((0,T) \times \stte^U\) defined by,
+
+\[\pmap(\Xg)(\{(\rt,\mark)\}) = \begin{cases}
+1 &\te{ if } \Xg\tme{\rt} - \Xg\tme{\rt-} = \mark\\
+0 &\te{ otherwise}
+\end{cases}.\]
+
+Similarly, for \(W \subseteq U\), \(\pmap^W(\Xg) = \pmap\left(\proj^W_{T}(\Xg)\right)\). For any \(v\in U\), \(\pmap^{v}(\Xg)\) is a random measure on \((0,T) \times \stte\) given by,
+
+\[\pmap^{v}(\Xg)(\{(\rt,\mark)\}) = \begin{cases}
+1 &\te{ if } \Xg\vcomp{v}\tme{\rt} - \Xg\vcomp{v}\tme{\rt-} = \mark\\
+0 &\te{ otherwise}
+\end{cases},\]
+
+and
+
+\[\pmap^{v}(\Xg)(\{(\rt,\mark): \Xg\vcomp{v}\tme{\rt} - \Xg\vcomp{v}\tme{\rt-} \neq \mark\}) = 0.\]
+\label{Ex::pmap}
+\end{defn}
+
+\begin{assu}
+Let \(A\subseteq U \subseteq V\). Let \(\Xg\) be an \(\stte^U\)-valued c\`adl\`ag stochastic process on \((0,T)\). For each \(v\in U\), \(\pmap^{v}(\Xg)\) has an \(\Xg\)-predictable intensity, \(\ratee^{v}\), and there exists a constant \(C < \infty\) such that \(\sup_{v\in U} \ratee^{v} \leq C\). Furthermore, \(f: \stte^{|A|}\times \stte\ra[0,C]\) is some function.
+\label{Ex::Eassu}
+\end{assu}
+
+
+\begin{lem}
+Let \(\rp\) be an \(\F\)-adapted marked point process with \(\F\)-predictable intensity \(\ratee\) with respect to the reference measure \(\ell\) on its mark space. For all \(t \in [0,T]\), let \(\sigma(\rp_{t}) \subseteq \alt{\F}_{t}\subset \F_{t}\) define a subfiltration of \(\F\) containing the history of \(\rp\). If there exists an \(\ell\times \pr\)-almost sure left-continuous modification of \(\cratee(t,\mark) := \ex{\ratee(t,\mark)|\alt{\F}_{t-}}\) with respect to \(t\), then \(\cratee\) is the \(\alt{\F}\)-predictable intensity of \(\rp\).
+\label{Ex::filtering}
+\end{lem}
+
+\begin{proof}
+This is Lemma 5.3 from the main paper.
+\end{proof}
+
+Now we need a simple method to know when the conditional expectation has a left-continuous modification.
+
+
+\begin{lem}
+Suppose Assumption \ref{Ex::Eassu} holds. Let \(\mu = \law(\Xg)\) and \(v \in A\) with \(\neigh{v}\setminus A \subset B_i\). For any \(y \in \stte\), let
+
+\[\ratee^{v}_{t}(y) := \ratee(\Xg\vcomp{\cl{v}\cap A}\tmi{[0,t)},y) = \exmu{\Xh\sim \mu}{f(\Xh\vcomp{A}\tme{t-},y)|\Xh\vcomp{\phi_i(A\cap\cl{v})}\tmi{[0,t)} = \Xg\vcomp{A\cap\cl{v}}\tmi{[0,t)}}.\]
+
+Recall \(\phi_i\) was defined in definition \ref{abs::admissible}. Then \(\ratee^{v}_{t}(y)\) has an almost surely left-continuous modification on \([0,T)\) with respect to \(t\) for every \(v \in A\) and \(\ell\)-almost every \(y \in \stte\). \tr{\(\ell\) will be properly defined when I have a reasonable set of assumptions on the jump rates (assumption \ref{Main::Xassu})}.
+\label{Ex::leftmod}
+\end{lem}
+\begin{proof}
+Lemma 5.4 of the main paper is extremely similar to this Lemma. I can go back and generalize that Lemma to apply to this situation later so that this becomes a direct application of lemma 5.4 of the main paper.
+\end{proof}
+The remainder of the proof is fairly straight-forward. I'll finish it later.
+
+\section{Proof of Uniqueness}
+
+Let \((\mu,\Xg)\) be a solution to the local equations (\eqref{Main::local}-\eqref{Main::fixed}). I'm stuck trying to compute the Marginal distribution of \(\Xg\vcomp{\dneigh{B_i}}\) for a fixed \(i\) in terms of \(\mu\). The goal should be to use filtering theory to write a Poisson SDE with jump rates dependent upon conditional expectations of the past. However, I had some technical issues.
+
+\ind This lemma is necessary because we cannot expand the process without conditioning on that marginal. We cannot condition on that marginal without understanding its law.
+
+\ind I'll explain the difficulties in person tomorrow.
+\newpage
+\bibliographystyle{plain}
+\bibliography{weekly_refs}
+\end{document}
