@@ -49,31 +49,48 @@
 \newcommand{\cad}{\mb{D}}							%Cadlag space
 \newcommand{\argmin}{\te{arg}\min}
 
-%The model
-\newcommand{\Xf}{X}									%Full process
-\newcommand{\vcomp}[1]{_{#1}}						%v component
-\newcommand{\tme}[1]{(#1)}							%time
-\newcommand{\tmi}[1]{#1}							%time interval
-\newcommand{\stte}{\mc{X}}							%state space
 
-\newcommand{\arr}{\lambda}							%arrival rate
-\newcommand{\poiss}{N}								%Poisson process
-\newcommand{\poissv}[1]{_{#1}}						%v comp of Poisson
-\newcommand{\poisso}[1]{^{#1}}						%Other P modifier
-
-\newcommand{\neigh}[1]{\partial_{#1}}
-\newcommand{\cl}[1]{\ov{#1}}
-
-\newcommand{\IG}{\mc{L}}
-
-\newcommand{\ev}[1]{\ep^{#1}}
-\newcommand{\para}[1]{^{#1}}
+%Notation and Basic Assumptions
+%Graph Notation
+%Base Commands
+\newcommand{\sta}{\mc{X}}							%state space
+\newcommand{\neigh}[1]{\partial_{#1}}				%neighborhood
+\newcommand{\cl}[1]{\ov{#1}}						%graph closure
 \renewcommand{\root}{\mathbf{0}}
 
-\newcommand{\leb}{\te{Leb}}
-\newcommand{\uni}{m}
-\newcommand{\inter}[1]{#1^I}
-\newcommand{\neighI}[1]{\partial^I_{#1}}
+%Modifiers
+\newcommand{\stb}[1]{_{#1}}							%add base of \st
+\newcommand{\indx}[1]{^{#1}}						%sublimit index
+\newcommand{\subg}[1]{_{#1}}						%subgraph
+
+
+%Process Notation
+%Base Commands
+\newcommand{\Xf}{X}									%Full process
+\newcommand{\poiss}{N}								%Poisson process
+\newcommand{\leb}{\lambda}							%Lebesgue msr
+\newcommand{\Sm}{\ell}								%ctng msr on sta
+\newcommand{\rate}{r}								%jump rate
+\newcommand{\F}{\mc{F}}								%filtrations
+\newcommand{\m}{\mu}								%law of \Xf
+\newcommand{\proj}{\pi}								%projection
+
+%Modifiers
+\newcommand{\poissv}[1]{_{#1}}						%v comp of Poisson
+\newcommand{\poisso}[1]{^{#1}}						%Other P modifier
+\newcommand{\vind}[1]{_{#1}}						%v component
+\newcommand{\tme}[1]{(#1)}							%time
+\newcommand{\tmi}[1]{#1}							%time interval
+\newcommand{\gind}[1]{^#1}							%interaction net
+\newcommand{\vpara}[1]{^{#1}}						%vertex param
+\newcommand{\stpara}[1]{_{#1}}						%state parameter	
+\newcommand{\tpara}[1]{_{#1}}						%time parameter
+\newcommand{\gvpara}[2]{^{#1,#2}}					%G and v params
+\newcommand{\psf}{_*}								%push forward
+\newcommand{\tparapsf}[1]{_{#1,*}}					%psf t param
+
+%Simultaneous Jumps
+\newcommand{\Jmps}{\mc{J}}							%set of jumps
 
 %Abstraction
 
@@ -85,13 +102,12 @@
 
 %Existence
 \newcommand{\pmap}{\Lambda}
-\newcommand{\proj}{\pi}
 \newcommand{\rt}{\tau}
 \renewcommand{\mark}{\kappa}
 \newcommand{\Xg}{Y}
 \newcommand{\ratee}{\Gamma}
 \newcommand{\rp}{P}
-\newcommand{\F}{\mc{F}}
+
 \newcommand{\alt}[1]{\tilde{#1}}
 \newcommand{\cratee}{\alt{\ratee}}
 \newcommand{\law}{\te{Law}}
@@ -100,6 +116,15 @@
 
 
 
+
+%reassign later
+\newcommand{\arr}{\lambda}							%arrival rate
+\newcommand{\neighI}[1]{\partial^I_{#1}}			%int. neigh
+\newcommand{\IG}{\mc{L}}							%infinitesimal gen
+\newcommand{\ev}[1]{\ep^{#1}}						%std basis
+\newcommand{\para}[1]{^{#1}}
+\newcommand{\inter}[1]{#1^I}
+\newcommand{\uni}{m}
 
 
 \newtheorem{thms}{Theorem}[section]
@@ -126,28 +151,66 @@ Remark: This document uses the results from the derivation of the local approxim
 
 Remark: In this paper I mostly work with locally finite graphs. However, I proved all my results in the main paper for bounded degree graphs. I may need to strengthen the assumptions of this paper to bounded degree. However, since we are working with local convergence, all results that hold for locally finite graphs should extend to bounded degree graphs (the one possible exception would be well-posedness results).
 
-\section{The model}
-\label{mod}
+\section{Notation and basic assumptions}
+\label{not}
 
-The load balancing model we are considering describes a queuing network for which jobs arrive at each queue at rate \(\arr\) independently. Each job is processed in Exp(1) time independently of all other jobs. Upon arrival to a queue, each job checks the size of its queue and all neighboring queues and goes to the shortest queue. If there is a tie, the job chooses between queues uniformly at random. We can also consider a variation in which each job checks all queues within a distance \(k\) of its own queue, however for now we will restrict to the \(k=1\) case.
+\subsection{Graph Notation}
+\label{g::not}
 
-\ind We can define this rigorously as well. Let \(\stte = \mb{N}_0 = \{0,1,\dots\}\). Let \(G = (V,E,\root)\) be an at most countable, connected and locally finite rooted graph. We will let this represent the queuing network. Then let \(\inter{G} = (V,\inter{E},\root)\), where \(\inter{E} = \{(u,v) \in V^2: 0 < d_G(u,v)\leq 2\}\). This is the interaction network. For any \(v \in V\), let \(\neigh{v}\) be the neighbors of \(v\) in \(G\). Let \(\cl{v} = \neigh{v}\cup \{v\}\). Let \(\neighI{v}\) be the neighbors of \(v\) in \(\inter{G}\). Let \(\{\poiss\poissv{v}:v \in V\}\) be a sequence of i.i.d. unit rate Poisson processes on \(\mb{R}^2\).
+We consider an interacting particle system for which each node takes values in the countable state-space \(\sta = \mb{Z}\). Our goal is to understand the local evolution of a network whose nodes take values in \(\sta\). Therefore, we represent the interaction network between nodes by a rooted graph \(G = (V,E,\root)\) in which \(\root \in V\) is the vertex representing the node whose local evolution is of interest to us. When looking at sequences of such processes on networks, we let \(G\indx{k} = (V\indx{k},E\indx{k},\root\indx{k})\) represent the network structure in the sublimit.
 
-\ind Let \(\Xf\) be a \(\stte^V\)-valued process. We let \(\Xf\vcomp{v}\tme{t}\) denote the size of queue \(v\) at time \(t\). Then the above description of the load-balancing model can be characterized by the following equation:
+\ind Given a specific rooted graph \(G\) and any vertex set \(\root \in A \subseteq V\), define \(G\subg{A} \defeq (A,E\cap A^2,\root)\). This is the maximal subgraph of \(G\) restricted to the vertices in \(A\). For any \(v \in V\), let \(\neigh{v}\subseteq V\) be the neighbors of \(v\) in \(g\). Let \(\cl{v} = \{v\}\cup\neigh{v}\). 
+
+\subsection{Process Notation}
+\label{p::not}
+
+In this context, define the \(\sta^V\)-valued c\`adl\`ag process \(\Xf\). For any \(v \in V\) and \(t < \infty\), let \(\Xf\vind{v}\tme{t}\) be the value the \(v\)-component of \(\Xf\) at time \(t\). Given a set \(A\subset V\) and an interval \(I \subset \mb{R}^+\), let \(\Xf\vind{A}\tmi{I}\) denote the path taken by the \(A\)-components of \(\Xf\) over \(\tmi{I}\). We denote the natural filtration of this process by \(\F\vpara{A}\tpara{t} \defeq \sigma \left(\Xf\vind{v}\tmi{[0,t]}\right)\). We will often be interested in the predictable sigma-algebra of the process given by \(\F\vpara{A}\tpara{t-} \defeq \bigvee_{s < t} \F\vpara{A}\tpara{s} = \sigma\left(\Xf\vind{v}\tmi{[0,t)}\right)\). Furthermore, when the evolution of \(\Xf\) with respect to its topology is clearly defined, but the specific interaction network of \(\Xf\) is not clear from context, we may write \(\Xf\gind{G}\) to represent the process \(\Xf\) with interaction network \(G\). Fix any \(v \in V,t \in \mb{R}^+\) and \(j \in \sta\setminus\{\Xf\vind{v}\tme{t}\}\). Then at time \(t\), we can define the jump rate \(\rate\gvpara{G}{v}\stpara{j}(G,t)\) to be the inverse of the expected time for \(\Xf\vind{v}\) to jump to \(\Xf\vind{v} + j\) time \(t\). It now becomes clear how we can define the interaction network. The interaction network is any graph \(G\) such that \(\Xf\) is a \(\sta^V\)-valued process and such that for every \(v \in V\),\(t\in \mb{R}^+\) and \(j \in \sta\), \(\rate\gvpara{G}{v}\stpara{j}(G,t)\) is \(\F\vpara{v}\tpara{t-}\)-measurable. 
+
+\ind We can rigorously define this in the following manner. Let \(\Sm\) be the counting measure on \(\sta\). Let \(\leb\) be the Lebesgue measure on \(\mb{R}^2\). Let \(\{\poiss\poissv{v}:v \in V\}\) be a sequence of i.i.d. Poisson point processes on \(\sta\times \mb{R}^2\) with intensity \(\Sm\times \leb\). Let \(\Xf\tme{0}\) be an \(\sta^V\)-valued random variable. Let \(\Xf\tme{0}\) be some given \(\sta^V\)-valued random variable. Assume \(\rate\gvpara{G}{v}\stpara{j}(t)\) is \(\F\vpara{\cl{v}}\tpara{t-}\)-measurable for all \(v,j,t\) and that \(\rate\gvpara{G}{v}\stpara{j}:\mb{R}^+ \ra\mb{R}^+\) is an almost surely Borel-Measurable function. Consider the following SDE:
+
+\begin{equation}
+\Xf\gind{G}\vind{v}\tme{t} = \Xf\gind{G}\vind{v}\tme{0} + \int_{\sta}\int_{(0,t]\times (0,\infty)} j\mb{I}_{r \leq \rate\gvpara{G}{v}\stpara{i}(s)} \poiss\poissv{v}\left(dr,ds,di\right)
+\label{p::not::Xf}
+\end{equation}
+
+Assuming equation \eqref{p::not::Xf} has a well-defined unique solution, this is the infinite-dimensional process whose marginals we are interested in.
+
+\ind Let \(\m\) be the law of \(\Xf\). We are primarily interested in the marginals of \(\m\). For any \(A \subseteq V\), let \(\proj\vpara{A}(\Xf)\) map \(\Xf\) to an \(\sta^A\)-valued process defined by \((\proj\vpara{A}(\Xf))\vind{v} = \Xf\vind{v}\) for all \(v\in A\). Then the \(A\)-marginal of \(\m\) is given by the push-forward measure \(\proj\vpara{A}\psf(\m)\). We may also be interested in restricting the process to some finite time interval \([0,T)\). In this case, we define \((\proj\vpara{A}\tpara{T}(\Xf))\vind{v}\tme{t} = \Xf\vind{v}\tme{t}\) for \(v \in A\) and \(t \in [0,T)\). The corresponding push-forward measure is given by \(\proj\vpara{A}\tparapsf{t}(\m)\).
+
+\subsubsection{Considering Simultaneous Jumps}
+
+The model described above is fairly general. However, it does not account for certain models such as the exclusion process in which multiple nodes of \(\Xf\) may update simultaneous with positive probability. This can be accounted for in the following manner. Let \(\Jmps \subseteq 2^V\) be the set of subsets of nodes of \(\Xf\) that can jump simultaneously with positive probability. Assume this set is at most countable.
+
+\subsection{Assumptions}
+\label{a::not}
+
+
+
+
+\subsection{Equations and Well-Posedness}
+
+
+
+
+\ind The load balancing model we are considering describes a queuing network for which jobs arrive at each queue at rate \(\arr\) independently. Each job is processed in Exp(1) time independently of all other jobs. Upon arrival to a queue, each job checks the size of its queue and all neighboring queues and goes to the shortest queue. If there is a tie, the job chooses between queues uniformly at random. We can also consider a variation in which each job checks all queues within a distance \(k\) of its own queue, however for now we will restrict to the \(k=1\) case.
+
+\ind We can define this rigorously as well. Let \(\sta = \mb{N}_0 = \{0,1,\dots\}\). Let \(G = (V,E,\root)\) be an at most countable, connected and locally finite rooted graph. We will let this represent the queuing network. Then let \(\inter{G} = (V,\inter{E},\root)\), where \(\inter{E} = \{(u,v) \in V^2: 0 < d_G(u,v)\leq 2\}\). This is the interaction network. For any \(v \in V\), let \(\neigh{v}\) be the neighbors of \(v\) in \(G\). Let \(\cl{v} = \neigh{v}\cup \{v\}\). Let \(\neighI{v}\) be the neighbors of \(v\) in \(\inter{G}\). Let \(\{\poiss\poissv{v}:v \in V\}\) be a sequence of i.i.d. unit rate Poisson processes on \(\mb{R}^2\).
+
+\ind Let \(\Xf\) be a \(\sta^V\)-valued process. We let \(\Xf\vind{v}\tme{t}\) denote the size of queue \(v\) at time \(t\). Then the above description of the load-balancing model can be characterized by the following equation:
 
 \begin{align}
-\Xf\vcomp{v}\tme{t} &= \Xf\vcomp{v}\tme{0} + \sum_{u \in \cl{v}} \int_{(0,t]}\int_{(0,\arr + 1]} \mb{I}_{r \leq r\vcomp{v}\tme{s-}} - \mb{I}_{\Xf\vcomp{v}\tme{s-} > 0}\mb{I}_{\arr < r \leq \arr+1}\,\poiss\poissv{v}(dr,ds)\label{mod::Xf}\\
-r\vcomp{v}\tme{t} &= \arr\frac{\mb{I}_{\Xf\vcomp{v}\tme{t} = \min_{w \in \cl{u}} \Xf\vcomp{w}\tme{t}}}{|\{\argmin_{w \in \cl{u}} \Xf\vcomp{w}\tme{t}\}|}\nonumber
+\Xf\vind{v}\tme{t} &= \Xf\vind{v}\tme{0} + \sum_{u \in \cl{v}} \int_{(0,t]}\int_{(0,\arr + 1]} \mb{I}_{r \leq r\vind{v}\tme{s-}} - \mb{I}_{\Xf\vind{v}\tme{s-} > 0}\mb{I}_{\arr < r \leq \arr+1}\,\poiss\poissv{v}(dr,ds)\label{mod::Xf}\\
+r\vind{v}\tme{t} &= \arr\frac{\mb{I}_{\Xf\vind{v}\tme{t} = \min_{w \in \cl{u}} \Xf\vind{w}\tme{t}}}{|\{\argmin_{w \in \cl{u}} \Xf\vind{w}\tme{t}\}|}\nonumber
 \end{align}
 
-Let \(\ev{v}\) be the vector in \(\stte^V\) such that \(\ev{v}\vcomp{u} = \delta_{u,v}\). I will refer to this as the standard basis on \(\stte^V\).
+Let \(\ev{v}\) be the vector in \(\sta^V\) such that \(\ev{v}\vind{u} = \delta_{u,v}\). I will refer to this as the standard basis on \(\sta^V\).
 
 \begin{thms}
-Suppose that \(\sup_{v \in V} \ex{\Xf\vcomp{v}\tme{0}} < \infty\). Then equation \eqref{mod::Xf} has a unique strong solution \(\Xf\). Furthermore, \(\Xf\) is a well-defined Feller Process with infinitesimal generator,
+Suppose that \(\sup_{v \in V} \ex{\Xf\vind{v}\tme{0}} < \infty\). Then equation \eqref{mod::Xf} has a unique strong solution \(\Xf\). Furthermore, \(\Xf\) is a well-defined Feller Process with infinitesimal generator,
 
 \begin{align}
-\IG f(x) &= \sum_{v \in V}\arr\frac{\mb{I}_{x\vcomp{v} = \min_{w \in \cl{u}} x\vcomp{w}}}{|\{\argmin_{w \in \cl{u}} x\vcomp{w}\}|}[f(x + \ev{v}) - f(x)] + \mb{I}_{x\vcomp{v} > 0}[f(x-\ev{v}) - f(x)]\nonumber\\
-&:= \sum_{v \in V}r\vcomp{v}\para{x}[f(x + \ev{v}) - f(x)] + \mb{I}_{x\vcomp{v} > 0}[f(x-\ev{v}) - f(x)]\label{mod::IG}
+\IG f(x) &= \sum_{v \in V}\arr\frac{\mb{I}_{x\vind{v} = \min_{w \in \cl{u}} x\vind{w}}}{|\{\argmin_{w \in \cl{u}} x\vind{w}\}|}[f(x + \ev{v}) - f(x)] + \mb{I}_{x\vind{v} > 0}[f(x-\ev{v}) - f(x)]\nonumber\\
+&:= \sum_{v \in V}r\vind{v}\para{x}[f(x + \ev{v}) - f(x)] + \mb{I}_{x\vind{v} > 0}[f(x-\ev{v}) - f(x)]\label{mod::IG}
 \end{align}
 
 and core, \tr{to be found later}.
@@ -163,7 +226,7 @@ First apply standard arguments to show unique existence of a solution. Ideally, 
 Let \(\leb\) be the Lebesgue measure on \(\mb{R}^2\), and let \(\uni\) be the uniform measure on \(\{-1,1\}\). Let \(\poiss\poissv{v}\) be a Poisson process on \(\mb{R}^2\times \{-1,1\}\) with intensity \(\leb \otimes \uni\). The unique strong solution to equation \eqref{mod::Xf} is equal in distribution to the unique strong solution to,
 
 \begin{equation}
-\Xf\vcomp{v}\tme{t} = \Xf\vcomp{v}\tme{0} + \int_{(0,t]}\int_{(0,\arr+1]} \int_{\{-1,1\}} b\mb{I}_{b=1,r \leq r\vcomp{v}\tme{s-}}\mb{I}_{b=-1,r \leq \mb{I}_{\Xf\vcomp{v}\tme{s-} > 0}}\,\poiss\poissv{v}(db,dr,ds).
+\Xf\vind{v}\tme{t} = \Xf\vind{v}\tme{0} + \int_{(0,t]}\int_{(0,\arr+1]} \int_{\{-1,1\}} b\mb{I}_{b=1,r \leq r\vind{v}\tme{s-}}\mb{I}_{b=-1,r \leq \mb{I}_{\Xf\vind{v}\tme{s-} > 0}}\,\poiss\poissv{v}(db,dr,ds).
 \label{mod::GenXf}
 \end{equation}
 \label{mod::General}
@@ -196,7 +259,7 @@ Let \(G^n = (V^n,E^n,\root^n)\) be a sequence of rooted graphs. We say \(G^n \ra
 \end{defn}
 
 \begin{defn}
-Let \(G^n\) be a sequence of countable, connected, locally finite rooted graphs converging locally to a countable, connected, locally finite graph \(G\). Let \(\Xf^n\) be a \(\stte^{V^n}\)-valued process. Let \(\Xf\) be a \(\stte^V\)-valued process. 
+Let \(G^n\) be a sequence of countable, connected, locally finite rooted graphs converging locally to a countable, connected, locally finite graph \(G\). Let \(\Xf^n\) be a \(\sta^{V^n}\)-valued process. Let \(\Xf\) be a \(\sta^V\)-valued process. 
 
 \ind For every \(k\in \mb{N}\), \(n \geq n_k\) and \(v \in V_k\), let \(\Xf^{n,k}_v = \Xf^n_{\psi_{n,k}^{-1}(v)}\). Then \(\Xf^n\) converges locally weakly to \(\Xf\) if for every \(k \in \mb{N}\),
 
@@ -262,7 +325,7 @@ The set \(A\) is called an admissible set. \(\{B_i\}\) will be referred to as th
 The definition of an admissible set is designed ensure a high enough level of symmetry for the arguments in the main paper to hold in this case as well. \tr{Interestingly enough, if this assumption suffices to prove the local approximation, then we will be able to understand the dynamics of a typical class of particles even when such particles are split into heterogeneous classes so long as they are distributed with a high level of symmetry. This will be especially useful if we consider random graphs later.}
 
 \begin{thms}
-Let \(G\) be a \(\d\)-Cayley tree. Then \(\inter{G}\) (see 2nd paragraph of section \ref{mod}) is admissible. Furthermore, the set \(A = V_3\) is an admissible set (see definition \ref{mod::trunc}).
+Let \(G\) be a \(\d\)-Cayley tree. Then \(\inter{G}\) (see 2nd paragraph of section\iffalse \ref{mod} \fi) is admissible. Furthermore, the set \(A = V_3\) is an admissible set (see definition \ref{mod::trunc}).
 \end{thms}
 \begin{proof}
 \tr{I don't have a proof yet, but these conditions were constructed with load-balancing in mind, and I have a roughly hand-drawn diagram showing \(A,B,C,D\) for load-balancing on the \(\d\)-Cayley tree.}
@@ -288,10 +351,10 @@ The results from the main paper are almost sufficient. I just need to extend the
 Let \(G\) be an admissible graph with admissible set \(A\), partitions \(\{B_i\}_{i=1}^\ell\), boundary set \(\{C_i\}_{i=1}^\ell\) and template set \(D\).
 
 \begin{assu}
-Let \(\Xf\) be a c\`adl\`ag \(\stte^V\)-valued process with some bound on each node's total jump rate and some bound to prevent any node from exploding in finite time. Define,
+Let \(\Xf\) be a c\`adl\`ag \(\sta^V\)-valued process with some bound on each node's total jump rate and some bound to prevent any node from exploding in finite time. Define,
 
 \begin{equation}
-\Xf\vcomp{v}\tme{t} = \Xf\vcomp{v}\tme{0} + \sum_{k \in \stte}\int_{(0,t]}\int_{(0,C]} k\mb{I}_{r\leq r_v^k(\Xf\vcomp{\cl{v}}\tme{s-})} \poiss\poissv{v}(dr,ds).
+\Xf\vind{v}\tme{t} = \Xf\vind{v}\tme{0} + \sum_{k \in \sta}\int_{(0,t]}\int_{(0,C]} k\mb{I}_{r\leq r_v^k(\Xf\vind{\cl{v}}\tme{s-})} \poiss\poissv{v}(dr,ds).
 \label{Main::full}
 \end{equation}
 
@@ -304,16 +367,16 @@ where \(\poiss\poissv{v}\) is a unit rate Poisson process on \(\mb{R}^2\), and \
 Suppose assumption \ref{Main::Xassu} holds. Let \(\intA = \{v \in A: \neigh{v} \subseteq A\}\). Consider the following equations:
 
 \begin{align}
-\Xg\vcomp{v}\tme{t} &= 
+\Xg\vind{v}\tme{t} &= 
 \begin{cases}
-\Xg\vcomp{v}\tme{t} + \sum_{k \in \stte} \int_{[0,t)}\int_{(0,C]} k\mb{I}_{r\leq r^k_v(\Xg\vcomp{\cl{v}}\tme{s-})}\,\poiss\poissv{v}(dr,ds) & \te{ if } v \in \intA\\
-\Xg\vcomp{v}\tme{0} + \sum_{k \in \stte} \int_{[0,t)}\int_{(0,C]} k\mb{I}_{r\leq \alt{r}^k_v(\Xg\vcomp{\cl{v}\cap A}\tmi{[0,s)}}\,\poiss\poissv{v}(dr,ds) &\te{ otherwise}
+\Xg\vind{v}\tme{t} + \sum_{k \in \sta} \int_{[0,t)}\int_{(0,C]} k\mb{I}_{r\leq r^k_v(\Xg\vind{\cl{v}}\tme{s-})}\,\poiss\poissv{v}(dr,ds) & \te{ if } v \in \intA\\
+\Xg\vind{v}\tme{0} + \sum_{k \in \sta} \int_{[0,t)}\int_{(0,C]} k\mb{I}_{r\leq \alt{r}^k_v(\Xg\vind{\cl{v}\cap A}\tmi{[0,s)}}\,\poiss\poissv{v}(dr,ds) &\te{ otherwise}
 \end{cases}\label{Main::local}\\
-\alt{r}^k_v(x_{\cl{v}\cap A}[0,t)) &= \exmu{\Xg \sim \mu}{r^k_{\phi_i(v)}(\Xg\vcomp{A}\tme{t-})|\Xg\vcomp{\phi_i(\cl{v}\cap A)}\tmi{[0,t)} = x\vcomp{\cl{v}\cap A}\tmi{[0,t)}}\label{Main::CI}\\
+\alt{r}^k_v(x_{\cl{v}\cap A}[0,t)) &= \exmu{\Xg \sim \mu}{r^k_{\phi_i(v)}(\Xg\vind{A}\tme{t-})|\Xg\vind{\phi_i(\cl{v}\cap A)}\tmi{[0,t)} = x\vind{\cl{v}\cap A}\tmi{[0,t)}}\label{Main::CI}\\
 \mu &= \law(\Xg).\label{Main::fixed}
 \end{align}
 
-Equations \eqref{Main::local}, \eqref{Main::CI} and \eqref{Main::fixed} have a unique weak solution in law, and the law of this solution is the marginal distribution of \(\law(\Xf)\) on \(\stte^A\).
+Equations \eqref{Main::local}, \eqref{Main::CI} and \eqref{Main::fixed} have a unique weak solution in law, and the law of this solution is the marginal distribution of \(\law(\Xf)\) on \(\sta^A\).
 \end{thms}
 
 \section{Proof of Existence}
@@ -323,31 +386,31 @@ Just like in the regular tree case, the idea of the proof is to convert \(\Xf\) 
 
 \ind In this section, we assume \(G\) is admissible. Let \(A,\{B_i\}_{i=1}^\ell, \{C_i\}_{i=1}^\ell\) and \(D\) be defined as in definition \ref{abs::admissible}.
 
-\ind Let \(W\subseteq V\). \(\proj^W_T\) map a c\`adl\`ag path on \(\stte^U\) to its component parts on \(\stte^W\) for any \(U \supseteq W\). That is, if \(\Xg\) is a c\`adl\`ag, \(\stte^U\)-valued process, then \((\proj^W_T(\Xg))\vcomp{v} = \Xg\vcomp{v}\) for all \(v \in W\). The \(T\) denotes the time interval on which \(\proj^W_T(\Xg)\) is defined.
+\ind Let \(W\subseteq V\). \(\proj^W_T\) map a c\`adl\`ag path on \(\sta^U\) to its component parts on \(\sta^W\) for any \(U \supseteq W\). That is, if \(\Xg\) is a c\`adl\`ag, \(\sta^U\)-valued process, then \((\proj^W_T(\Xg))\vind{v} = \Xg\vind{v}\) for all \(v \in W\). The \(T\) denotes the time interval on which \(\proj^W_T(\Xg)\) is defined.
 
 \begin{defn}
-Let \(U\subseteq V\) and suppose \(\Xg\) is a \(\stte^U\)-valued c\`adl\`ag stochastic process adapted to its own natural filtration. Fix some \(0 < T < \infty\). Then define the marked point process \(\pmap(\Xg)\) as a random measure on \((0,T) \times \stte^U\) defined by,
+Let \(U\subseteq V\) and suppose \(\Xg\) is a \(\sta^U\)-valued c\`adl\`ag stochastic process adapted to its own natural filtration. Fix some \(0 < T < \infty\). Then define the marked point process \(\pmap(\Xg)\) as a random measure on \((0,T) \times \sta^U\) defined by,
 
 \[\pmap(\Xg)(\{(\rt,\mark)\}) = \begin{cases}
 1 &\te{ if } \Xg\tme{\rt} - \Xg\tme{\rt-} = \mark\\
 0 &\te{ otherwise}
 \end{cases}.\]
 
-Similarly, for \(W \subseteq U\), \(\pmap^W(\Xg) = \pmap\left(\proj^W_{T}(\Xg)\right)\). For any \(v\in U\), \(\pmap^{v}(\Xg)\) is a random measure on \((0,T) \times \stte\) given by,
+Similarly, for \(W \subseteq U\), \(\pmap^W(\Xg) = \pmap\left(\proj^W_{T}(\Xg)\right)\). For any \(v\in U\), \(\pmap^{v}(\Xg)\) is a random measure on \((0,T) \times \sta\) given by,
 
 \[\pmap^{v}(\Xg)(\{(\rt,\mark)\}) = \begin{cases}
-1 &\te{ if } \Xg\vcomp{v}\tme{\rt} - \Xg\vcomp{v}\tme{\rt-} = \mark\\
+1 &\te{ if } \Xg\vind{v}\tme{\rt} - \Xg\vind{v}\tme{\rt-} = \mark\\
 0 &\te{ otherwise}
 \end{cases},\]
 
 and
 
-\[\pmap^{v}(\Xg)(\{(\rt,\mark): \Xg\vcomp{v}\tme{\rt} - \Xg\vcomp{v}\tme{\rt-} \neq \mark\}) = 0.\]
+\[\pmap^{v}(\Xg)(\{(\rt,\mark): \Xg\vind{v}\tme{\rt} - \Xg\vind{v}\tme{\rt-} \neq \mark\}) = 0.\]
 \label{Ex::pmap}
 \end{defn}
 
 \begin{assu}
-Let \(A\subseteq U \subseteq V\). Let \(\Xg\) be an \(\stte^U\)-valued c\`adl\`ag stochastic process on \((0,T)\). For each \(v\in U\), \(\pmap^{v}(\Xg)\) has an \(\Xg\)-predictable intensity, \(\ratee^{v}\), and there exists a constant \(C < \infty\) such that \(\sup_{v\in U} \ratee^{v} \leq C\). Furthermore, \(f: \stte^{|A|}\times \stte\ra[0,C]\) is some function.
+Let \(A\subseteq U \subseteq V\). Let \(\Xg\) be an \(\sta^U\)-valued c\`adl\`ag stochastic process on \((0,T)\). For each \(v\in U\), \(\pmap^{v}(\Xg)\) has an \(\Xg\)-predictable intensity, \(\ratee^{v}\), and there exists a constant \(C < \infty\) such that \(\sup_{v\in U} \ratee^{v} \leq C\). Furthermore, \(f: \sta^{|A|}\times \sta\ra[0,C]\) is some function.
 \label{Ex::Eassu}
 \end{assu}
 
@@ -365,11 +428,11 @@ Now we need a simple method to know when the conditional expectation has a left-
 
 
 \begin{lem}
-Suppose Assumption \ref{Ex::Eassu} holds. Let \(\mu = \law(\Xg)\) and \(v \in A\) with \(\neigh{v}\setminus A \subset B_i\). For any \(y \in \stte\), let
+Suppose Assumption \ref{Ex::Eassu} holds. Let \(\mu = \law(\Xg)\) and \(v \in A\) with \(\neigh{v}\setminus A \subset B_i\). For any \(y \in \sta\), let
 
-\[\ratee^{v}_{t}(y) := \ratee(\Xg\vcomp{\cl{v}\cap A}\tmi{[0,t)},y) = \exmu{\Xh\sim \mu}{f(\Xh\vcomp{A}\tme{t-},y)|\Xh\vcomp{\phi_i(A\cap\cl{v})}\tmi{[0,t)} = \Xg\vcomp{A\cap\cl{v}}\tmi{[0,t)}}.\]
+\[\ratee^{v}_{t}(y) := \ratee(\Xg\vind{\cl{v}\cap A}\tmi{[0,t)},y) = \exmu{\Xh\sim \mu}{f(\Xh\vind{A}\tme{t-},y)|\Xh\vind{\phi_i(A\cap\cl{v})}\tmi{[0,t)} = \Xg\vind{A\cap\cl{v}}\tmi{[0,t)}}.\]
 
-Recall \(\phi_i\) was defined in definition \ref{abs::admissible}. Then \(\ratee^{v}_{t}(y)\) has an almost surely left-continuous modification on \([0,T)\) with respect to \(t\) for every \(v \in A\) and \(\ell\)-almost every \(y \in \stte\). \tr{\(\ell\) will be properly defined when I have a reasonable set of assumptions on the jump rates (assumption \ref{Main::Xassu})}.
+Recall \(\phi_i\) was defined in definition \ref{abs::admissible}. Then \(\ratee^{v}_{t}(y)\) has an almost surely left-continuous modification on \([0,T)\) with respect to \(t\) for every \(v \in A\) and \(\ell\)-almost every \(y \in \sta\). \tr{\(\ell\) will be properly defined when I have a reasonable set of assumptions on the jump rates (assumption \ref{Main::Xassu})}.
 \label{Ex::leftmod}
 \end{lem}
 \begin{proof}
@@ -379,7 +442,7 @@ The remainder of the proof is fairly straight-forward. I'll finish it later.
 
 \section{Proof of Uniqueness}
 
-Let \((\mu,\Xg)\) be a solution to the local equations (\eqref{Main::local}-\eqref{Main::fixed}). I'm stuck trying to compute the Marginal distribution of \(\Xg\vcomp{\dneigh{B_i}}\) for a fixed \(i\) in terms of \(\mu\). The goal should be to use filtering theory to write a Poisson SDE with jump rates dependent upon conditional expectations of the past. However, I had some technical issues.
+Let \((\mu,\Xg)\) be a solution to the local equations (\eqref{Main::local}-\eqref{Main::fixed}). I'm stuck trying to compute the Marginal distribution of \(\Xg\vind{\dneigh{B_i}}\) for a fixed \(i\) in terms of \(\mu\). The goal should be to use filtering theory to write a Poisson SDE with jump rates dependent upon conditional expectations of the past. However, I had some technical issues.
 
 \ind This lemma is necessary because we cannot expand the process without conditioning on that marginal. We cannot condition on that marginal without understanding its law.
 
