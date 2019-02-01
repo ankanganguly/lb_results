@@ -5,3 +5,6 @@
 *.pdf
 *.gz
 *.upa
+*.bbl
+*.upb
+*.blg

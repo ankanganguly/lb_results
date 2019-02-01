@@ -105,20 +105,31 @@
 \newcommand{\trnc}[1]{_{#1}}						%Truncated graph
 
 
+%Conditional Independence
+%Base Commands
+%Modifiers
 
 
 %Statement
-\newcommand{\intA}{A^\mathrm{o}}
+%Base Commands
+\newcommand{\Xg}{Y}
+
+%Modifications
+\newcommand{\inte}[1]{{#1}^\mathrm{o}}
+\newcommand{\alt}[1]{\tilde{#1}}
+
+
 
 %Existence
+%Base commands
 \newcommand{\pmap}{\Lambda}
 \newcommand{\rt}{\tau}
 \renewcommand{\mark}{\kappa}
-\newcommand{\Xg}{Y}
 \newcommand{\ratee}{\Gamma}
 \newcommand{\rp}{P}
+\newcommand{\mm}{\nu}
 
-\newcommand{\alt}[1]{\tilde{#1}}
+
 \newcommand{\cratee}{\alt{\ratee}}
 \newcommand{\law}{\te{Law}}
 \newcommand{\Xh}{Z}
@@ -394,75 +405,64 @@ I've proved version of this theorem in the main paper with stronger assumptions 
 \section{Statement of the Local Approximation}
 \label{Main}
 
-Let \(G\) be an admissible graph with admissible set \(A\), partitions \(\{B_i\}_{i=1}^\ell\), boundary set \(\{C_i\}_{i=1}^\ell\) and template set \(D\).
-
-\begin{assu}
-Let \(\Xf\) be a c\`adl\`ag \(\sta^V\)-valued process with some bound on each node's total jump rate and some bound to prevent any node from exploding in finite time. Define,
-
-\begin{equation}
-\Xf\vind{v}\tme{t} = \Xf\vind{v}\tme{0} + \sum_{k \in \sta}\int_{(0,t]}\int_{(0,C]} k\mb{I}_{r\leq r_v^k(\Xf\vind{\cl{v}}\tme{s-})} \poiss\poissv{v}(dr,ds).
-\label{Main::full}
-\end{equation}
-
-where \(\poiss\poissv{v}\) is a unit rate Poisson process on \(\mb{R}^2\), and \(0 \leq r_v^k \leq C\) and \(r_v^k\) satisfies some other conditions (measurability and symmetry).
-\label{Main::Xassu}
-\end{assu}
-
 
 \begin{thms}
-Suppose assumption \ref{Main::Xassu} holds. Let \(\intA = \{v \in A: \neigh{v} \subseteq A\}\). Consider the following equations:
+Let \((G,\Xf)\) satisfy assumption \ref{a::admissible}. Let \(A\) be the admissible set and \(\{B_i\}\) the branches of \(A\). Let \(\inte{A} = \{v \in A: \neigh{v} \subseteq A\}\). Consider the following equations:
 
 \begin{align}
 \Xg\vind{v}\tme{t} &= 
 \begin{cases}
-\Xg\vind{v}\tme{t} + \sum_{k \in \sta} \int_{[0,t)}\int_{(0,C]} k\mb{I}_{r\leq r^k_v(\Xg\vind{\cl{v}}\tme{s-})}\,\poiss\poissv{v}(dr,ds) & \te{ if } v \in \intA\\
-\Xg\vind{v}\tme{0} + \sum_{k \in \sta} \int_{[0,t)}\int_{(0,C]} k\mb{I}_{r\leq \alt{r}^k_v(\Xg\vind{\cl{v}\cap A}\tmi{[0,s)}}\,\poiss\poissv{v}(dr,ds) &\te{ otherwise}
+\Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) & \te{ if } v \in \inte{A}\\
+\Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \alt{\rate}\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}\cap A}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) &\te{ otherwise}
 \end{cases}\label{Main::local}\\
-\alt{r}^k_v(x_{\cl{v}\cap A}[0,t)) &= \exmu{\Xg \sim \mu}{r^k_{\phi_i(v)}(\Xg\vind{A}\tme{t-})|\Xg\vind{\phi_i(\cl{v}\cap A)}\tmi{[0,t)} = x\vind{\cl{v}\cap A}\tmi{[0,t)}}\label{Main::CI}\\
+\alt{\rate}\gvpara{A}{v}\stpara{i}(x_{\cl{v}\cap A}[0,t)) &= \exmu{\Xg \sim \mu}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{A}\tmi{[0,t)}\right)\middle|\Xg\vind{\phi_j(\cl{v}\cap A)}\tmi{[0,t)} = x\vind{\cl{v}\cap A}\tmi{[0,t)}} \te{ if } v \in \neigh{B_j}\label{Main::CI}\\
 \mu &= \law(\Xg).\label{Main::fixed}
 \end{align}
 
-Equations \eqref{Main::local}, \eqref{Main::CI} and \eqref{Main::fixed} have a unique weak solution in law, and the law of this solution is the marginal distribution of \(\law(\Xf)\) on \(\sta^A\).
+Equations \eqref{Main::local}, \eqref{Main::CI} and \eqref{Main::fixed} have a unique weak solution in law, \(\mu = \law(\Xf\vind{A})\).
+\label{Main::Main}
 \end{thms}
 
-\section{Proof of Existence}
-\label{Ex}
+\subsection{Proof of Existence}
+\label{Ex::Main}
+
+In this section, we prove that \(\law(\Xf\vind{A})\) is a weak solution to equations \eqref{Main::local}-\eqref{Main::fixed} in Theorem \ref{Main::Main}.
 
 Just like in the regular tree case, the idea of the proof is to convert \(\Xf\) into a point process and use a well-known filtration result for point processes.
 
-\ind In this section, we assume \(G\) is admissible. Let \(A,\{B_i\}_{i=1}^\ell, \{C_i\}_{i=1}^\ell\) and \(D\) be defined as in definition \ref{abs::admissible}.
-
-\ind Let \(W\subseteq V\). \(\proj^W_T\) map a c\`adl\`ag path on \(\sta^U\) to its component parts on \(\sta^W\) for any \(U \supseteq W\). That is, if \(\Xg\) is a c\`adl\`ag, \(\sta^U\)-valued process, then \((\proj^W_T(\Xg))\vind{v} = \Xg\vind{v}\) for all \(v \in W\). The \(T\) denotes the time interval on which \(\proj^W_T(\Xg)\) is defined.
+\ind In this section, we assume \((G,\Xf)\) satisfy assumption \ref{a::admissible}. Recall that \(\proj\vpara{\cdot}\tpara{\cdot}(\cdot)\) is the projection mapping (see section \ref{p::not}).
 
 \begin{defn}
-Let \(U\subseteq V\) and suppose \(\Xg\) is a \(\sta^U\)-valued c\`adl\`ag stochastic process adapted to its own natural filtration. Fix some \(0 < T < \infty\). Then define the marked point process \(\pmap(\Xg)\) as a random measure on \((0,T) \times \sta^U\) defined by,
+Let \(U\subseteq V\) and suppose \(\Xg\) is a \(\sta^U\)-valued c\`adl\`ag stochastic process adapted to its own natural filtration. Define the marked point process \(\pmap(\Xg)\) as a random measure on \((0,\infty) \times \sta^U\) defined by,
 
 \[\pmap(\Xg)(\{(\rt,\mark)\}) = \begin{cases}
 1 &\te{ if } \Xg\tme{\rt} - \Xg\tme{\rt-} = \mark\\
 0 &\te{ otherwise}
 \end{cases}.\]
 
-Similarly, for \(W \subseteq U\), \(\pmap^W(\Xg) = \pmap\left(\proj^W_{T}(\Xg)\right)\). For any \(v\in U\), \(\pmap^{v}(\Xg)\) is a random measure on \((0,T) \times \sta\) given by,
+Similarly, for \(W \subseteq U\), \(\pmap\vpara{W}(\Xg) = \pmap\left(\proj\vpara{W}(\Xg)\right)\). For any \(v\in U\), \(\pmap\vpara{v}(\Xg)\) is a random measure on \((0,\infty) \times \sta\) given by,
 
-\[\pmap^{v}(\Xg)(\{(\rt,\mark)\}) = \begin{cases}
+\[\pmap\vpara{v}(\Xg)(\{(\rt,\mark)\}) = \begin{cases}
 1 &\te{ if } \Xg\vind{v}\tme{\rt} - \Xg\vind{v}\tme{\rt-} = \mark\\
 0 &\te{ otherwise}
 \end{cases},\]
 
 and
 
-\[\pmap^{v}(\Xg)(\{(\rt,\mark): \Xg\vind{v}\tme{\rt} - \Xg\vind{v}\tme{\rt-} \neq \mark\}) = 0.\]
+\[\pmap\vpara{v}(\Xg)(\{(\rt,\mark): \Xg\vind{v}\tme{\rt} - \Xg\vind{v}\tme{\rt-} \neq \mark\}) = 0.\]
+
+Finally, for any \(T\in (0,\infty)\), \(\pmap\tpara{T}(\Xg) = \pmap(\Xg)|_{\ms{B}\left((0,T]\times\sta^U\right)}\). \(\pmap\vpara{W}\tpara{T}(\Xg)\) and \(\pmap\vpara{v}\tpara{T}(\Xg)\) are defined in a similar fashion.
 \label{Ex::pmap}
 \end{defn}
 
 \begin{assu}
-Let \(A\subseteq U \subseteq V\). Let \(\Xg\) be an \(\sta^U\)-valued c\`adl\`ag stochastic process on \((0,T)\). For each \(v\in U\), \(\pmap^{v}(\Xg)\) has an \(\Xg\)-predictable intensity, \(\ratee^{v}\), and there exists a constant \(C < \infty\) such that \(\sup_{v\in U} \ratee^{v} \leq C\). Furthermore, \(f: \sta^{|A|}\times \sta\ra[0,C]\) is some function.
+Let \(G\) satisfy assumption \ref{a::gbasics}, however assumptions \ref{a::pbasics} and \ref{a::admissible} need not hold. Let \(A\) be any finite set, and define the set \(U\) such that \(A\subseteq U \subseteq V\). Let \(\Xg\) be an \(\sta^U\)-valued c\`adl\`ag stochastic process on \((0,\infty)\). For each \(v\in U\), \(\pmap\vpara{v}(\Xg)\) has an \(\Xg\vind{\cl{v}\cap U}\)-predictable intensity, \(\ratee\vpara{v}\), and there exists a constant \(C < \infty\) such that \(\sup_{v\in U}\sup_{t\in \mb{R}^+}\sum_{i \in \sta} \ratee\vpara{v}(t,i) \leq C\). Furthermore, \(f\tpara{t}: \cad([0,t),\sta^{|A|})\times \sta\ra[0,C]\) is a sequence of mappings such that for all \(\Xh \in \cad([0,\infty),\sta^{|A|})\), if \(t\in (0,\infty)\) is a continuity point of \(\Xh\), then \(t\) is a continuity point of \(s \mapsto f\tpara{s}(\Xh\tmi{[0,s)},z)\) for all \(z \in \sta\). \tr{Maybe move this technical assumption about \(f\) into section \ref{a::not}.}
 \label{Ex::Eassu}
 \end{assu}
 
 
 \begin{lem}
-Let \(\rp\) be an \(\F\)-adapted marked point process with \(\F\)-predictable intensity \(\ratee\) with respect to the reference measure \(\ell\) on its mark space. For all \(t \in [0,T]\), let \(\sigma(\rp_{t}) \subseteq \alt{\F}_{t}\subset \F_{t}\) define a subfiltration of \(\F\) containing the history of \(\rp\). If there exists an \(\ell\times \pr\)-almost sure left-continuous modification of \(\cratee(t,\mark) := \ex{\ratee(t,\mark)|\alt{\F}_{t-}}\) with respect to \(t\), then \(\cratee\) is the \(\alt{\F}\)-predictable intensity of \(\rp\).
+Let \(\rp\) be an \(\F\)-adapted marked point process with \(\F\)-predictable intensity \(\ratee\) with respect to the reference measure \(\Sm\) on its mark space. For all \(t \in [0,\infty)\), let \(\sigma(\rp_{t}) \subseteq \alt{\F}_{t}\subset \F_{t}\) define a subfiltration of \(\F\) containing the history of \(\rp\). If there exists an \(\ell\times \pr\)-almost sure left-continuous modification of \(\cratee(t,\mark) := \ex{\ratee(t,\mark)|\alt{\F}_{t-}}\) with respect to \(t\), then \(\cratee\) is the \(\alt{\F}\)-predictable intensity of \(\rp\). \tr{Make sure the lemma stated in the book works for infinite time.}
 \label{Ex::filtering}
 \end{lem}
 
@@ -470,21 +470,33 @@ Let \(\rp\) be an \(\F\)-adapted marked point process with \(\F\)-predictable in
 This is Lemma 5.3 from the main paper.
 \end{proof}
 
-Now we need a simple method to know when the conditional expectation has a left-continuous modification.
+Now we need a simple method to know when the conditional expectation has a left-continuous modification. The following lemma, although a technical lemma, may be more broadly useful. It is also later applied in the proof of uniqueness.
 
 
 \begin{lem}
-Suppose Assumption \ref{Ex::Eassu} holds. Let \(\mu = \law(\Xg)\) and \(v \in A\) with \(\neigh{v}\setminus A \subset B_i\). For any \(y \in \sta\), let
+Suppose Assumption \ref{Ex::Eassu} holds. Let \(\mm = \law(\Xg)\) and \(W\subseteq A \subseteq U\subseteq V\). Let \(W'\subseteq A\) be such that \(|W'| = |W|\), and suppose there is a natural association between elements of \(W'\) and \(W\). For any \(i \in \sta\), let
 
-\[\ratee^{v}_{t}(y) := \ratee(\Xg\vind{\cl{v}\cap A}\tmi{[0,t)},y) = \exmu{\Xh\sim \mu}{f(\Xh\vind{A}\tme{t-},y)|\Xh\vind{\phi_i(A\cap\cl{v})}\tmi{[0,t)} = \Xg\vind{A\cap\cl{v}}\tmi{[0,t)}}.\]
+\[\ratee\vpara{v}\tpara{t}(i) \defeq \exmu{\Xh\sim \mm}{f(\Xh\tmi{[0,t)},i)|\Xh\vind{W'}\tmi{[0,t)} = \Xg\vind{W}\tmi{[0,t)}}.\]
 
-Recall \(\phi_i\) was defined in definition \ref{abs::admissible}. Then \(\ratee^{v}_{t}(y)\) has an almost surely left-continuous modification on \([0,T)\) with respect to \(t\) for every \(v \in A\) and \(\ell\)-almost every \(y \in \sta\). \tr{\(\ell\) will be properly defined when I have a reasonable set of assumptions on the jump rates (assumption \ref{Main::Xassu})}.
+Then \(\ratee^{v}_{t}(y)\) has an almost surely left-continuous modification on \([0,T)\) with respect to \(t\) for every \(v \in A\) and \(\ell\)-almost every \(y \in \sta\), where \(\ell\) is the counting measure on \(\sta\) (see section \ref{p::not}).
 \label{Ex::leftmod}
 \end{lem}
 \begin{proof}
 Lemma 5.4 of the main paper is extremely similar to this Lemma. I can go back and generalize that Lemma to apply to this situation later so that this becomes a direct application of lemma 5.4 of the main paper.
 \end{proof}
-The remainder of the proof is fairly straight-forward. I'll finish it later.
+
+\begin{proof}[Proof of Theorem \ref{Main::Main} Existence]
+
+Let \((G,\Xf)\) be a process and graph satisfying assumption \ref{a::admissible}. Let \(\ev{v} \in \sta^V\) denote the standard basis vector of \(\sta^V\). That is, \(\ev{v}\vind{u} = \mb{I}_{u=v}\). By Theorem \ref{WP::WP}, \(\Xf\) is the unique solution to,
+
+\[\Xf\tme{t} = \Xf\tme{0} + \sum_{v \in V}\ev{v}\int_\sta\int_{(0,t]\times (0,\infty)} i\mb{I}_{r \leq \rate\gvpara{G}{v}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di).\]
+
+Then,
+
+\[\left(\proj\vpara{A}(\Xf)\right)\tme{t} = \left(\proj\vpara{A}(\Xf)\right)\tme{0} + \sum_{v\in A}\ev{v}\int_\sta\int_{(0,t]\times (0,\infty)} i\mb{I}_{r \leq \rate\gvpara{G}{v}\stpara{i}\tme{s}}\,\poiss\poissv(dr,ds,di).\]
+
+By \cite[Exercise 14.7.1]{DalVer08}
+\end{proof}
 
 \section{Proof of Uniqueness}
 
