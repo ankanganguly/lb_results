@@ -235,12 +235,14 @@ All graphs considered in this paper will satisfy assumption \ref{a::gbasics}. Co
 \item 
 
 \begin{equation}
-\sum_{i \in \mb{Z}}|i|\sup_{v \in V,t \in \mb{R}^+} \rate\gvpara{G}{v}\stpara{i}\tme{t} < \infty
+\sum_{i \in \sta}|i|\sup_{v \in V,t \in \mb{R}^+} \rate\gvpara{G}{v}\stpara{i}\tme{t} < \infty
 \label{a::bddjmp}
 \end{equation}
 \end{enumerate}
 
-Furthermore, \(\rate\gvpara{G}{v}\stpara{i}\tme{t}\) is \(\F\vpara{\cl{v}}\tpara{t-}\) measurable for all \(v\in V,i \in \sta, t \in \mb{R}^+\), and \(\rate\gvpara{G}{v}\stpara{i}\tme{t}: \mb{R}^+ \ra \mb{R}^+\) is almost surely Borel-measurable. \tr{Alternatively, \(\rate\gvpara{G}{v}\stpara{i}\tme{\cdot}\) is \(\{\F\vpara{\cl{v}}\tpara{\cdot}\}\)-predictable for all \(v \in V, i \in \sta\).}
+Furthermore, \(\rate\gvpara{G}{v}\stpara{i}\tme{t}\) is \(\F\vpara{\cl{v}}\tpara{t-}\) measurable for all \(v\in V,i \in \sta, t \in \mb{R}^+\), \(\rate\gvpara{G}{v}\stpara{i}\tme{t}: \mb{R}^+ \ra \mb{R}^+\) is almost surely left-continuous, and almost surely continuous at all continuity points of \(\Xf\vpara{\cl{v}}\).
+
+\skipLine
 
 Note: for clarity, I may occasionally use the notation, \(\rate\gvpara{G}{v}\stpara{i}(\Xf\gind{G}\vind{\cl{v}}\tmi{[0,t)}) \defeq \rate\gvpara{G}{v}\stpara{i}\tme{t}\).
 
@@ -295,6 +297,7 @@ Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics}, and suppose \(\phi\
 \[\Xf\gind{G}\vind{V} \deq \Xf\gind{G}\vind{\phi(V)},\]
 
 where \(\phi(V)\) is treated as a permutation of \(V\).
+\label{a::simprop}
 \end{prop}
 \begin{proof}
 This proof assumes that assumption \ref{a::pbasics} is enough to ensure that \(\Xf\gind{G}\) is the unique solution to equation \eqref{p::Xf}. In that case, use the symmetries to show that equation \eqref{p::Xf} is invariant in law with respect to application of \(\phi\). \tr{(Refer to some of my older papers for such a proof.)}
@@ -413,13 +416,13 @@ Let \((G,\Xf)\) satisfy assumption \ref{a::admissible}. Let \(A\) be the admissi
 \Xg\vind{v}\tme{t} &= 
 \begin{cases}
 \Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) & \te{ if } v \in \inte{A}\\
-\Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \alt{\rate}\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}\cap A}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) &\te{ otherwise}
+\Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \alt{\rate}\gvpara{A}{v}\stpara{i}(\Xg\vind{\dneigh{B_j}}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) &\te{ if } v \in \neigh{B_j}
 \end{cases}\label{Main::local}\\
-\alt{\rate}\gvpara{A}{v}\stpara{i}(x_{\cl{v}\cap A}[0,t)) &= \exmu{\Xg \sim \mu}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{A}\tmi{[0,t)}\right)\middle|\Xg\vind{\phi_j(\cl{v}\cap A)}\tmi{[0,t)} = x\vind{\cl{v}\cap A}\tmi{[0,t)}} \te{ if } v \in \neigh{B_j}\label{Main::CI}\\
+\alt{\rate}\gvpara{A}{v}\stpara{i}(x_{\dneigh{B_j}}[0,t)) &= \exmu{\Xg \sim \mu}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{A}\tmi{[0,t)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,t)} = x\vind{\dneigh{B_j}}\tmi{[0,t)}} \te{ if } v \in \neigh{B_j}\label{Main::CI}\\
 \mu &= \law(\Xg).\label{Main::fixed}
 \end{align}
 
-Equations \eqref{Main::local}, \eqref{Main::CI} and \eqref{Main::fixed} have a unique weak solution in law, \(\mu = \law(\Xf\vind{A})\).
+Equations \eqref{Main::local}, \eqref{Main::CI} and \eqref{Main::fixed} have a unique weak solution in law satisfying the results of theorem \ref{CI::CI}, \(\mu = \law(\Xf\vind{A})\). (We don't yet have a general proof of uniqueness, just that only one of the solutions satisfies the conditional independence property outlined in section \ref{CI}).
 \label{Main::Main}
 \end{thms}
 
@@ -476,7 +479,7 @@ Now we need a simple method to know when the conditional expectation has a left-
 \begin{lem}
 Suppose Assumption \ref{Ex::Eassu} holds. Let \(\mm = \law(\Xg)\) and \(W\subseteq A \subseteq U\subseteq V\). Let \(W'\subseteq A\) be such that \(|W'| = |W|\), and suppose there is a natural association between elements of \(W'\) and \(W\). For any \(i \in \sta\), let
 
-\[\ratee\vpara{v}\tpara{t}(i) \defeq \exmu{\Xh\sim \mm}{f(\Xh\tmi{[0,t)},i)|\Xh\vind{W'}\tmi{[0,t)} = \Xg\vind{W}\tmi{[0,t)}}.\]
+\[\ratee\vpara{v}\tpara{t}(i) \defeq \exmu{\Xh\sim \mm}{f_t(\Xh\tmi{[0,t)},i)|\Xh\vind{W'}\tmi{[0,t)} = \Xg\vind{W}\tmi{[0,t)}}.\]
 
 Then \(\ratee^{v}_{t}(y)\) has an almost surely left-continuous modification on \([0,T)\) with respect to \(t\) for every \(v \in A\) and \(\ell\)-almost every \(y \in \sta\), where \(\ell\) is the counting measure on \(\sta\) (see section \ref{p::not}).
 \label{Ex::leftmod}
@@ -495,7 +498,42 @@ Then,
 
 \[\left(\proj\vpara{A}(\Xf)\right)\tme{t} = \left(\proj\vpara{A}(\Xf)\right)\tme{0} + \sum_{v\in A}\ev{v}\int_\sta\int_{(0,t]\times (0,\infty)} i\mb{I}_{r \leq \rate\gvpara{G}{v}\stpara{i}\tme{s}}\,\poiss\poissv(dr,ds,di).\]
 
-By \cite[Exercise 14.7.1]{DalVer08}
+By definition, \(\pmap\left(\proj\vpara{A}(\Xf)\right) = \pmap\vpara{A}(\Xf)\). Let \(\rp = \pmap\vpara{A}(\Xf)\). By \cite[Exercise 14.7.1]{DalVer08}, \(\rp\) has \(\Xf\)-predictable intensity \(\ratee\) given by,
+
+\[\ratee(\rt,\mark) = \sum_{v \in A} \sum_{i \in \sta} \mb{I}_{\mark = i\ev{v}} \rate\gvpara{G}{v}\stpara{i}\tme{\rt}.\]
+
+However, for \(v \in A\setminus \inte{A}\), \(\rate\gvpara{G}{v}\stpara{i}\tme{\rt}\) is not \(\Xf\vind{A}\)-measurable. Furthermore, for \(v \in \inte{A}\), notice that \(\rate\gvpara{G}{v}\stpara{i}\tme{\rt} = \rate\gvpara{A}{v}\stpara{i}\tme{\rt}\) by assumption \ref{a::pbasics}. So, let's propose an alternate rate given by,
+
+\begin{equation}
+\alt{\ratee}(\rt,\mark) = \sum_{v \in \inte{A}}\sum_{i\in \sta} \mb{I}_{\mark = i\ev{v}}\rate\gvpara{A}{v}\stpara{i}\tme{\rt} + \sum_{v \in A\setminus \inte{A}}\sum_{i \in \sta} \mb{I}_{\mark = i\ev{v}}\ex{\rate\gvpara{G}{v}\stpara{i}\tme{\rt}\middle|\F\vpara{A}\tpara{\rt-}}.
+\label{Ex::tempfiltrate}
+\end{equation}
+
+Notice that by lemma \ref{Ex::filtering}, if \(\alt{\ratee}\) has a \(\Sm\times \pr\)-a.s. left-continuous modification with respect to time, then it is the \(\F\vpara{A}\)-predictable rate of \(\rp\). For all \(i\in\sta\) and \(v \in A\), \(\rate\gvpara{G}{v}\stpara{i}\tme{\cdot}\) is almost surely left-continuous and bounded. Thus, it suffices to prove that \(\ex{\rate\gvpara{G}{v}\stpara{i}(\rt)\middle|\F\vpara{A}\tpara{\rt-}}\) also has a left continuous modification for all \(i\in \sta\) and \(v \in A\setminus\inte{A}\).
+
+\ind Fix some \(v \in A\setminus \inte{A}\). By assumption \ref{a::admissible}, there exists a unique \(j\) such that \(v \in \neigh{B_j}\). Recall that \(C_j = \neigh{A}\cap B_j\), and there exists a symmetry of \(\Xf\), \(\phi_j\) such that \(\phi_j(C_j\cup\dneigh{B_j}) = D \subseteq A\). By proposition \ref{a::simprop}, \(\Xf\vind{V} \deq \Xf\vind{\phi_j(V)}\). It should be clear that \(\cl{v} \subseteq C_j\cup\dneigh{B_j}\).
+
+\ind Recalling that \(\m = \law(\Xf)\) and applying Theorem \ref{Main::CI} (we may consider \(\rate\gvpara{G}{v}\stpara{i}\tme{\rt}\) as a \(\F\vpara{C_j\cup\dneigh{B_j}}\tpara{\rt-}\)-measurable random variable and apply Lemma C.1 (e) from the main paper),
+
+\begin{align*}
+\exmu{\m}{\rate\gvpara{G}{v}\stpara{i}\tme{\rt}\middle|\F\vpara{A}\tpara{\rt-}} &=\exmu{\m}{\rate\gvpara{G}{v}\stpara{i}\left(\Xf\vind{\cl{v}}\tmi{[0,\rt)}\right)\middle|\F\vpara{A}\tpara{\rt-}}\\
+&\os{\te{thm \ref{Main::CI}}}{=} \exmu{\m}{\rate\gvpara{G}{v}\stpara{i}\left(\Xf\vind{\cl{v}}\tmi{[0,\rt)}\right)\middle|\F\vpara{\dneigh{B_j}}\tpara{\rt-}}\\
+&=\exmu{\Xg\sim \m}{\rate\gvpara{G}{v}\stpara{i}\left(\Xg\vind{\cl{v}}\tmi{[0,\rt)}\right)\middle|\Xg\vind{\dneigh{B_j}}\tmi{[0,\rt)} = \Xf\vind{\dneigh{B_j}}\tmi{[0,\rt)}}\\
+&\os{\te{prop \ref{a::simprop},assm \ref{a::pbasics}}}{=} \exmu{\Xg\sim \m}{\rate\gvpara{G}{\phi_j(v)}\stpara{i}\left(\Xg\vind{\phi_j(\cl{v})}\tmi{[0,\rt)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,\rt)} = \Xf\vind{\dneigh{B_j}}\tmi{[0,\rt)}}\\
+&\os{\phi_j(v) \in \inte{A}}{=} \exmu{\Xg\sim \m}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{\phi_j(\cl{v})}\tmi{[0,\rt)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,\rt)} = \Xf\vind{\dneigh{B_j}}\tmi{[0,\rt)}}\\
+\end{align*}
+
+Notice that this satisfies assumption \ref{Ex::Eassu} with \(f_t = \rate\), \(U = V\), \(A\) as the admissible set, the intensities satisfy the requisite bound by assumption \ref{a::pbasics}. Here \(W = \dneigh{B_j}\) and \(W' = \phi_j(\dneigh{B_j})\). Since they are related by a symmetry, \(|W'| = |W|\). Thus, by lemma \ref{Ex::leftmod}, \(\exmu{\m}{\rate\gvpara{G}{v}\stpara{i}\tme{\rt}\middle|\F\vpara{A}\tpara{\rt-}}\) has a left-continuous modification. Then \(\alt{\ratee}\) must also have a left-continuous modification, and 
+
+\[\alt{\ratee}(\rt,\mark) = \sum_{v \in \inte{A}}\sum_{i\in \sta} \mb{I}_{\mark = i\ev{v}}\rate\gvpara{A}{v}\stpara{i}\tme{\rt} + \sum_j\sum_{v \in B_j}\sum_{i \in \sta} \mb{I}_{\mark = i\ev{v}}\exmu{\Xg\sim \m}{\rate\gvpara{G}{\phi_j(v)}\stpara{i}\left(\Xg\vind{\phi_j(\cl{v})}\tmi{[0,\rt)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,\rt)} = \Xf\vind{\dneigh{B_j}}\tmi{[0,\rt)}}.\]
+
+Once again, by \cite[Exercise 14.7.1]{DalVer08}, the process \(\pmap^{-1}(\rp) \deq \proj\vpara{A}(\Xf)\), and can be written as a solution to the equations,
+
+\[\Xg\vind{v}\tme{t} = \Xg\vind{v}\tme{0} + \begin{cases}
+\int_\sta\int_{(0,t]\times (0,\infty)} \rate\gvpara{A}{v}\stpara{i}\tme{s}\,\poiss\poiss{v}(dr,ds,di) &\te{ if } v \in \inte{A}\\
+\int_\sta\int_{(0,t]\times (0,\infty)} \alt{\rate}\gvpara{A}{v}\stpara{i}\tme{s}\,\poiss\poiss{v}(dr,ds,di) &\te{ if } v \in \inte{A}
+\end{cases}.\]
+
 \end{proof}
 
 \section{Proof of Uniqueness}
