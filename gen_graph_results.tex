@@ -56,6 +56,10 @@
 \newcommand{\sta}{\mc{X}}							%state space
 \newcommand{\neigh}[1]{\partial_{#1}}				%neighborhood
 \newcommand{\dneigh}[1]{\partial^2_{#1}}			%double neigh
+\newcommand{\tneigh}[1]{\partial^3_{#1}}			%double neigh
+\newcommand{\gneigh}[2]{\partial^{#1}_{#2}}			%neighborhood w G
+\newcommand{\dgneigh}[2]{\partial^{2,#1}_{#2}}		%double neigh w G
+\newcommand{\tgneigh}[2]{\partial^{3,#1}_{#2}}		%double neigh w G
 \newcommand{\cl}[1]{\ov{#1}}						%graph closure
 \renewcommand{\root}{\mathbf{0}}
 
@@ -96,6 +100,7 @@
 
 
 %Assumptions
+\newcommand{\psize}{\ell}							%Branching size
 
 
 %Well-Posedness
@@ -112,27 +117,41 @@
 
 %Statement
 %Base Commands
-\newcommand{\Xg}{Y}
+\newcommand{\Xg}{Y}									%Alt proc rep
+\newcommand{\brate}{\alt{\rate}}					%local rt at bdry
 
 %Modifications
-\newcommand{\inte}[1]{{#1}^\mathrm{o}}
-\newcommand{\alt}[1]{\tilde{#1}}
+\newcommand{\inte}[1]{{#1}^\mathrm{o}}				%interior
+\newcommand{\alt}[1]{\tilde{#1}}					%alternate
 
 
 
 %Existence
 %Base commands
-\newcommand{\pmap}{\Lambda}
-\newcommand{\rt}{\tau}
-\renewcommand{\mark}{\kappa}
-\newcommand{\ratee}{\Gamma}
-\newcommand{\rp}{P}
-\newcommand{\mm}{\nu}
+\newcommand{\pmap}{\Lambda}							%Mk chain to PP
+\newcommand{\rt}{\tau}								%PP time
+\renewcommand{\mark}{\kappa}						%PP mark
+\newcommand{\ratee}{\Gamma}							%generic rate
+\newcommand{\cratee}{\alt{\ratee}}					%gen cdtl rate
+\newcommand{\rp}{P}									%generic PP
+\newcommand{\mm}{\nu}								%gen msr
+\newcommand{\law}{\te{Law}}							%law
+\newcommand{\ev}[1]{\ep^{#1}}						%std basis
 
 
-\newcommand{\cratee}{\alt{\ratee}}
-\newcommand{\law}{\te{Law}}
-\newcommand{\Xh}{Z}
+%Uniqueness
+%Base Commands
+\newcommand{\Xh}{Z}									%2nd alt proc
+\newcommand{\crate}{\hat{\rate}}					%dneigh bdry rate
+\newcommand{\bgrate}{\ov{\rate}}					%gen bdry rate
+\newcommand{\bcrate}{\hat{\brate}}					%neigh bdry rate
+
+%Modifications
+\newcommand{\gvjpara}[3]{^{#1,#2,#3}}				%include branch
+
+
+
+
 
 
 
@@ -142,7 +161,6 @@
 \newcommand{\arr}{\lambda}							%arrival rate
 \newcommand{\neighI}[1]{\partial^I_{#1}}			%int. neigh
 \newcommand{\IG}{\mc{L}}							%infinitesimal gen
-\newcommand{\ev}[1]{\ep^{#1}}						%std basis
 \newcommand{\para}[1]{^{#1}}
 \newcommand{\inter}[1]{#1^I}
 \newcommand{\uni}{m}
@@ -173,6 +191,21 @@ Remark: This document uses the results from the derivation of the local approxim
 
 Remark: In this paper I mostly work with locally finite graphs. However, I proved all my results in the main paper for bounded degree graphs. I may need to strengthen the assumptions of this paper to bounded degree. However, since we are working with local convergence, all results that hold for locally finite graphs should extend to bounded degree graphs (the one possible exception would be well-posedness results).
 
+\section{TODO}
+
+\begin{itemize}
+\item Split assumption \ref{a::admissible} into 2 assumptions. One on the nature of the underlying graph \(G\), and the other on the process \(\Xf\gind{G}\). Adjust references to assumptions accordingly.
+
+\item Modify assumption \ref{a::pbasics} to include regularity of \(\rate\gvpara{G}{v}\stpara{i}\) with respect to time. Ideally, it should be left-continuous.
+
+\item Revise assumption \ref{Ex::Eassu} and lemma \ref{Ex::leftmod} after proof of uniqueness is complete.
+
+\item Make sure modifications made to \(\gneigh{G}{v}\) and \(dgneigh{G}{v}\) are properly placed in the paper.
+
+\item Bad notation! I use \(i\) to indicate elements of \(\sta\) and to enumerate branches of \(A\).
+\end{itemize}
+
+
 \section{Notation and basic assumptions}
 \label{not}
 
@@ -181,7 +214,7 @@ Remark: In this paper I mostly work with locally finite graphs. However, I prove
 
 We consider an interacting particle system for which each node takes values in the countable state-space \(\sta = \mb{Z}\). Our goal is to understand the local evolution of a network whose nodes take values in \(\sta\). Therefore, we represent the interaction network between nodes by a rooted graph \(G = (V,E,\root)\) in which \(\root \in V\) is the vertex representing the node whose local evolution is of interest to us. When looking at sequences of such processes on networks, we let \(G\indx{k} = (V\indx{k},E\indx{k},\root\indx{k})\) represent the network structure in the sublimit.
 
-\ind Given a specific rooted graph \(G\) and any vertex set \(\root \in A \subseteq V\), define \(G\subg{A} \defeq (A,E\cap A^2,\root)\). This is the maximal subgraph of \(G\) restricted to the vertices in \(A\). For any \(v \in V\), let \(\neigh{v}\subseteq V\) be the neighbors of \(v\) in \(g\). Let \(\cl{v} = \{v\}\cup\neigh{v}\). We also define the double neighborhood given by, \(\dneigh{v} = \neigh{v} \cup \neigh{\neigh{v}}\setminus \{v\}\). These notions also extend to vertex set. If \(A\subseteq V\), then \(\neigh{A} = \{v \in V\setminus A: \exists u \in A\te{ s.t. } (u,v) \in E\}\). \(\cl{A} = A\cup \neigh{A}\). \(\dneigh{A} = \neigh{A} \cup\neigh{\neigh{A}}\setminus A\).
+\ind Given a specific rooted graph \(G\) and any vertex set \(\root \in A \subseteq V\), define \(G\subg{A} \defeq (A,E\cap A^2,\root)\). This is the maximal subgraph of \(G\) restricted to the vertices in \(A\). For any \(v \in V\), let \(\neigh{v}\subseteq V\) be the neighbors of \(v\) in \(g\). Let \(\cl{v} = \{v\}\cup\neigh{v}\). We also define the double neighborhood given by, \(\dneigh{v} = \cl{\neigh{v}}\setminus \{v\}\). The triple neighborhood will be \(\cl{\dneigh{v}} \setminus \{v\}\). These notions also extend to vertex set. If \(A\subseteq V\), then \(\neigh{A} = \{v \in V\setminus A: \exists u \in A\te{ s.t. } (u,v) \in E\}\). \(\cl{A} = A\cup \neigh{A}\). \(\dneigh{A} = \cl{\neigh{A}}\setminus A\). Similarly, \(\tneigh{A} = \dneigh{A} \cup \cl{\dneigh{A}}\setminus A\). When the graph we are working on is not clear from context, I may use \(\gneigh{G}{A}\), \(\dgneigh{G}{A}\) and \(\tgneigh{G}{A}\) to denote the neighborhood, double neighborhood and triple neighborhood of \(A\) with respect to \(G\).
 
 \subsection{Process Notation}
 \label{p::not}
@@ -309,18 +342,17 @@ Now we can characterize the types of symmetries necessary for the local equation
 Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics}. \(G\) is said to be admissible if there exists a finite set \(A \subset V\) such that,
 
 \begin{itemize}
-\item There exists a finite partition \(\{B_i\}_{i=1}^\ell\) of \(A^c\).
+\item There exists a finite partition \(\{B_i\}_{i=1}^\psize\) of \(A^c\).
 
 \item \(\dneigh{B_i} \subseteq A\) for all \(i\).
 
-\item Let \(C_i = B_i\cap \neigh{A}\). For any \(i \neq j\), there exists a symmetry \(\phi_{i,j}\) such that \(\phi_{i,j}(A) = \phi_{i,j}(A)\), \(\phi_{i,j}(C_i) = C_j\) and \(\phi_{i,j}(\dneigh{B_i}) = \dneigh{B_j}\).
+\item Let \(C_i = B_i\cap\neigh{A}\). For each \(i\), there exists a symmetry, \(\phi_i\), such that \(\phi_i(C_i\cup \dneigh{B_i})\defeq D_i \subset A\).
 
-\item There exists a set \(D \subseteq A\) such that for each \(i\), there exists a self-isomorphism of \(G\), \(\phi_i\), such that \(\phi_i(C_i\cup \dneigh{B_i}) = D\).
+\item \tr{revise: look at lemma \ref{Uq::symbdry}} If we let \(A^{(1)} = A\cup \left(\bigcup_{i=1}^\psize C_i\right)\). Then \(A^{(1)}\) is also admissible with partition \(\{B^{(1)}_i\}_{i=1}^{\psize^{(1)}}\). Let \(C^{(1)}_i = B^{(1)}_i\cap \neigh{A^{(1)}}\). Then for any \(i = 1,\dots,\psize^{(1)}\), there exists a \(j \in \{1,\dots,\psize\}\) such that \(\phi_j(C^{(1)}_i)= C_{i'}\) for some \(i' = 1,\dots,\psize\), and \(\phi_j(C^{(1)}_i\cap \dneigh{B^{(1)}_i}) = C_{i'}\cap \dneigh{B_{i'}}\). Furthermore, for every \(i \in \{1,\dots,\psize\}\), there exists some \(i' \in \{1,\dots,\psize^{(1)}\}\) and \(j \in \{1,\dots,\psize\}\) such that \(\phi_j(C_{i'}^{(1)}) = C_i\) and \(\phi_j(C_{i'}^{(1)}\cup\dneigh{B^{(1)}_{i'}}) = C_i\cup\dneigh{B_i}\). Notice that this definition is recursive.
 
-\item If we let \(A^{(1)} = A\cup \left(\bigcup_{i=1}^\ell C_i\right)\). Then \(A^{(1)}\) is also admissible with partition \(\{B^{(1)}_i\}_{i=1}^{\ell'}\). Let \(C^{(1)}_i = B^{(1)}_i\cap \neigh{A^{(1)}}\). Then for any \(i \leq \ell\) and \(i' \leq \ell'\), there exists a self-isomorphism \(\phi^{(1)}_{i,i'}\) such that \(\phi^{(1)}_{i,i'}(C_i) = C^{(1)}_{i'}\) and \(\phi^{(1)}_{i,i'}(B_i\cap\neigh{A}) = B^{(1)}_{i'}\cap \neigh{A^{(1)}}\). As a result, \(D^{(1)} = D\). Notice that this is a recursive definition.
 \end{itemize}
 
-The set \(A\) is called an admissible set. \(\{B_i\}\) will be referred to as the set of branches of \(A\). \(\{C_i\}\) will be called the boundary nodes of \(A\). \(D\) is the template set.
+The set \(A\) is called an admissible set. \(\{B_i\}_{i=1}^\psize\) will be referred to as the set of branches of \(A\). \(\psize\) is the branching number of \(A\). \(\{C_i\}_{i=1}^\psize\) will be called the boundary nodes of \(A\). \(r_i\) will be the branch reflections of \(A\).
 
 \ind \tr{Right now I'm just adding assumptions whenever I need them (after making sure load-balancing satisfies them).}
 \label{a::admissible}
@@ -416,9 +448,9 @@ Let \((G,\Xf)\) satisfy assumption \ref{a::admissible}. Let \(A\) be the admissi
 \Xg\vind{v}\tme{t} &= 
 \begin{cases}
 \Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) & \te{ if } v \in \inte{A}\\
-\Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \alt{\rate}\gvpara{A}{v}\stpara{i}(\Xg\vind{\dneigh{B_j}}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) &\te{ if } v \in \neigh{B_j}
+\Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \brate\gvpara{A}{v}\stpara{i}(\Xg\vind{\dneigh{B_j}}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) &\te{ if } v \in \neigh{B_j}
 \end{cases}\label{Main::local}\\
-\alt{\rate}\gvpara{A}{v}\stpara{i}(x_{\dneigh{B_j}}[0,t)) &= \exmu{\Xg \sim \mu}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{A}\tmi{[0,t)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,t)} = x\vind{\dneigh{B_j}}\tmi{[0,t)}} \te{ if } v \in \neigh{B_j}\label{Main::CI}\\
+\brate\gvpara{A}{v}\stpara{i}(x_{\dneigh{B_j}}[0,t)) &= \exmu{\Xg \sim \mu}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{A}\tmi{[0,t)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,t)} = x\vind{\dneigh{B_j}}\tmi{[0,t)}} \te{ if } v \in \neigh{B_j}\label{Main::CI}\\
 \mu &= \law(\Xg).\label{Main::fixed}
 \end{align}
 
@@ -459,7 +491,7 @@ Finally, for any \(T\in (0,\infty)\), \(\pmap\tpara{T}(\Xg) = \pmap(\Xg)|_{\ms{B
 \end{defn}
 
 \begin{assu}
-Let \(G\) satisfy assumption \ref{a::gbasics}, however assumptions \ref{a::pbasics} and \ref{a::admissible} need not hold. Let \(A\) be any finite set, and define the set \(U\) such that \(A\subseteq U \subseteq V\). Let \(\Xg\) be an \(\sta^U\)-valued c\`adl\`ag stochastic process on \((0,\infty)\). For each \(v\in U\), \(\pmap\vpara{v}(\Xg)\) has an \(\Xg\vind{\cl{v}\cap U}\)-predictable intensity, \(\ratee\vpara{v}\), and there exists a constant \(C < \infty\) such that \(\sup_{v\in U}\sup_{t\in \mb{R}^+}\sum_{i \in \sta} \ratee\vpara{v}(t,i) \leq C\). Furthermore, \(f\tpara{t}: \cad([0,t),\sta^{|A|})\times \sta\ra[0,C]\) is a sequence of mappings such that for all \(\Xh \in \cad([0,\infty),\sta^{|A|})\), if \(t\in (0,\infty)\) is a continuity point of \(\Xh\), then \(t\) is a continuity point of \(s \mapsto f\tpara{s}(\Xh\tmi{[0,s)},z)\) for all \(z \in \sta\). \tr{Maybe move this technical assumption about \(f\) into section \ref{a::not}.}
+Let \(G\) satisfy assumption \ref{a::gbasics}, however assumptions \ref{a::pbasics} and \ref{a::admissible} need not hold. Let \(A\) be any finite set, and define the set \(U\) such that \(A\subseteq U \subseteq V\). Let \(\Xg\) be an \(\sta^U\)-valued c\`adl\`ag stochastic process on \((0,\infty)\). For each \(v\in U\), \(\pmap\vpara{v}(\Xg)\) has an \(\Xg\vind{A}\)-predictable intensity, \(\ratee\vpara{v}\), and there exists a constant \(C < \infty\) such that \(\sup_{v\in U}\sup_{t\in \mb{R}^+}\sum_{i \in \sta} \ratee\vpara{v}(t,i) \leq C\). Furthermore, \(f\tpara{t}: \cad([0,t),\sta^{|A|})\times \sta\ra[0,C]\) is a sequence of mappings such that for all \(\Xh \in \cad([0,\infty),\sta^{|A|})\), if \(t\in (0,\infty)\) is a continuity point of \(\Xh\), then \(t\) is a continuity point of \(s \mapsto f\tpara{s}(\Xh\tmi{[0,s)},z)\) for all \(z \in \sta\). \tr{Maybe move this technical assumption about \(f\) into section \ref{a::not}.}
 \label{Ex::Eassu}
 \end{assu}
 
@@ -481,7 +513,7 @@ Suppose Assumption \ref{Ex::Eassu} holds. Let \(\mm = \law(\Xg)\) and \(W\subset
 
 \[\ratee\vpara{v}\tpara{t}(i) \defeq \exmu{\Xh\sim \mm}{f_t(\Xh\tmi{[0,t)},i)|\Xh\vind{W'}\tmi{[0,t)} = \Xg\vind{W}\tmi{[0,t)}}.\]
 
-Then \(\ratee^{v}_{t}(y)\) has an almost surely left-continuous modification on \([0,T)\) with respect to \(t\) for every \(v \in A\) and \(\ell\)-almost every \(y \in \sta\), where \(\ell\) is the counting measure on \(\sta\) (see section \ref{p::not}).
+Then \(\ratee\vpara{v}\tpara{t}(i)\) has an almost surely left-continuous modification on \([0,T)\) with respect to \(t\) for every \(v \in A\) and \(\ell\)-almost every \(i \in \sta\), where \(\ell\) is the counting measure on \(\sta\) (see section \ref{p::not}). Furthermore, \(\ratee\vpara{v}\tpara{t}(i)\) is a.s. continuous at all continuity points of \(\Xg\vind{W}\).
 \label{Ex::leftmod}
 \end{lem}
 \begin{proof}
@@ -511,7 +543,7 @@ However, for \(v \in A\setminus \inte{A}\), \(\rate\gvpara{G}{v}\stpara{i}\tme{\
 
 Notice that by lemma \ref{Ex::filtering}, if \(\alt{\ratee}\) has a \(\Sm\times \pr\)-a.s. left-continuous modification with respect to time, then it is the \(\F\vpara{A}\)-predictable rate of \(\rp\). For all \(i\in\sta\) and \(v \in A\), \(\rate\gvpara{G}{v}\stpara{i}\tme{\cdot}\) is almost surely left-continuous and bounded. Thus, it suffices to prove that \(\ex{\rate\gvpara{G}{v}\stpara{i}(\rt)\middle|\F\vpara{A}\tpara{\rt-}}\) also has a left continuous modification for all \(i\in \sta\) and \(v \in A\setminus\inte{A}\).
 
-\ind Fix some \(v \in A\setminus \inte{A}\). By assumption \ref{a::admissible}, there exists a unique \(j\) such that \(v \in \neigh{B_j}\). Recall that \(C_j = \neigh{A}\cap B_j\), and there exists a symmetry of \(\Xf\), \(\phi_j\) such that \(\phi_j(C_j\cup\dneigh{B_j}) = D \subseteq A\). By proposition \ref{a::simprop}, \(\Xf\vind{V} \deq \Xf\vind{\phi_j(V)}\). It should be clear that \(\cl{v} \subseteq C_j\cup\dneigh{B_j}\).
+\ind Fix some \(v \in A\setminus \inte{A}\). By assumption \ref{a::admissible}, there exists a unique \(j\) such that \(v \in \neigh{B_j}\). Recall that \(C_j = \neigh{A}\cap B_j\), and there exists a symmetry of \(\Xf\), \(\phi_j\) such that \(\phi_j(C_j\cup\dneigh{B_j}) \subseteq A\). By proposition \ref{a::simprop}, \(\Xf\vind{V} \deq \Xf\vind{\phi_j(V)}\). It should be clear that \(\cl{v} \subseteq C_j\cup\dneigh{B_j}\).
 
 \ind Recalling that \(\m = \law(\Xf)\) and applying Theorem \ref{Main::CI} (we may consider \(\rate\gvpara{G}{v}\stpara{i}\tme{\rt}\) as a \(\F\vpara{C_j\cup\dneigh{B_j}}\tpara{\rt-}\)-measurable random variable and apply Lemma C.1 (e) from the main paper),
 
@@ -523,26 +555,152 @@ Notice that by lemma \ref{Ex::filtering}, if \(\alt{\ratee}\) has a \(\Sm\times 
 &\os{\phi_j(v) \in \inte{A}}{=} \exmu{\Xg\sim \m}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{\phi_j(\cl{v})}\tmi{[0,\rt)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,\rt)} = \Xf\vind{\dneigh{B_j}}\tmi{[0,\rt)}}\\
 \end{align*}
 
-Notice that this satisfies assumption \ref{Ex::Eassu} with \(f_t = \rate\), \(U = V\), \(A\) as the admissible set, the intensities satisfy the requisite bound by assumption \ref{a::pbasics}. Here \(W = \dneigh{B_j}\) and \(W' = \phi_j(\dneigh{B_j})\). Since they are related by a symmetry, \(|W'| = |W|\). Thus, by lemma \ref{Ex::leftmod}, \(\exmu{\m}{\rate\gvpara{G}{v}\stpara{i}\tme{\rt}\middle|\F\vpara{A}\tpara{\rt-}}\) has a left-continuous modification. Then \(\alt{\ratee}\) must also have a left-continuous modification, and 
+Notice that this satisfies assumption \ref{Ex::Eassu} with \(f_t = \rate\gvpara{A}{\phi_j(v)}\stpara{i}\), \(U = V\), \(A\) as the admissible set, the intensities satisfy the requisite bound by assumption \ref{a::pbasics}. Here \(W = \dneigh{B_j}\) and \(W' = \phi_j(\dneigh{B_j})\). Since they are related by a symmetry, \(|W'| = |W|\). Thus, by lemma \ref{Ex::leftmod}, \(\exmu{\m}{\rate\gvpara{G}{v}\stpara{i}\tme{\rt}\middle|\F\vpara{A}\tpara{\rt-}}\) has a left-continuous modification. Then \(\alt{\ratee}\) must also have a left-continuous modification, and 
 
-\[\alt{\ratee}(\rt,\mark) = \sum_{v \in \inte{A}}\sum_{i\in \sta} \mb{I}_{\mark = i\ev{v}}\rate\gvpara{A}{v}\stpara{i}\tme{\rt} + \sum_j\sum_{v \in B_j}\sum_{i \in \sta} \mb{I}_{\mark = i\ev{v}}\exmu{\Xg\sim \m}{\rate\gvpara{G}{\phi_j(v)}\stpara{i}\left(\Xg\vind{\phi_j(\cl{v})}\tmi{[0,\rt)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,\rt)} = \Xf\vind{\dneigh{B_j}}\tmi{[0,\rt)}}.\]
+\[\alt{\ratee}(\rt,\mark) = \sum_{v \in \inte{A}}\sum_{i\in \sta} \mb{I}_{\mark = i\ev{v}}\rate\gvpara{A}{v}\stpara{i}\tme{\rt} + \sum_j\sum_{v \in B_j}\sum_{i \in \sta} \mb{I}_{\mark = i\ev{v}}\exmu{\Xg\sim \m}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{\phi_j(\cl{v})}\tmi{[0,\rt)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,\rt)} = \Xf\vind{\dneigh{B_j}}\tmi{[0,\rt)}}.\]
 
 Once again, by \cite[Exercise 14.7.1]{DalVer08}, the process \(\pmap^{-1}(\rp) \deq \proj\vpara{A}(\Xf)\), and can be written as a solution to the equations,
 
 \[\Xg\vind{v}\tme{t} = \Xg\vind{v}\tme{0} + \begin{cases}
-\int_\sta\int_{(0,t]\times (0,\infty)} \rate\gvpara{A}{v}\stpara{i}\tme{s}\,\poiss\poiss{v}(dr,ds,di) &\te{ if } v \in \inte{A}\\
-\int_\sta\int_{(0,t]\times (0,\infty)} \alt{\rate}\gvpara{A}{v}\stpara{i}\tme{s}\,\poiss\poiss{v}(dr,ds,di) &\te{ if } v \in \inte{A}
-\end{cases}.\]
+\int_\sta\int_{(0,t]\times (0,\infty)} \rate\gvpara{A}{v}\stpara{i}\tme{s}\,\poiss\poissv{v}(dr,ds,di) &\te{ if } v \in \inte{A}\\
+\int_\sta\int_{(0,t]\times (0,\infty)} \brate\gvpara{A}{v}\stpara{i}\tme{s}\,\poiss\poissv{v}(dr,ds,di) &\te{ if } v \in A\setminus\inte{A}
+\end{cases},\]
+
+where
+
+\[\brate\gvpara{A}{v}\stpara{i}\tme{t} = \exmu{\Xg\sim \m}{\rate\gvpara{G}{\phi_j(v)}\stpara{i}\left(\Xg\vind{\phi_j(\cl{v})}\tmi{[0,t)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,t)} = \Xf\vind{\dneigh{B_j}}\tmi{[0,t)}}\te{ if } v \in \neigh{B_j}.\]
 
 \end{proof}
 
 \section{Proof of Uniqueness}
+\label{Uq}
 
-Let \((\mu,\Xg)\) be a solution to the local equations (\eqref{Main::local}-\eqref{Main::fixed}). I'm stuck trying to compute the Marginal distribution of \(\Xg\vind{\dneigh{B_i}}\) for a fixed \(i\) in terms of \(\mu\). The goal should be to use filtering theory to write a Poisson SDE with jump rates dependent upon conditional expectations of the past. However, I had some technical issues.
+Let \((\mm,\Xg)\) be a solution to the local equations (\eqref{Main::local}-\eqref{Main::fixed}). Assume that for every \(U,U' \subseteq A\) such that \(\{U,U',\dgneigh{A}{U}\}\) is a partition of \(A\) and \(t \in [0,\infty)\),
 
-\ind This lemma is necessary because we cannot expand the process without conditioning on that marginal. We cannot condition on that marginal without understanding its law.
+\[\Xg\vind{U}\tmi{[0,t)} \perp \Xg\vind{U'}\tmi{[0,t)} |\Xg\vind{\dgneigh{A}{U}}\tmi{[0,t)}.\]
 
-\ind I'll explain the difficulties in person tomorrow.
+Our approach to this proof will be to construct a measure \(\mm\vpara{V} \in \pmsr(\sta^V)\) such that \(\proj\psf\vpara{A}(\mm\vpara{V}) = \mm\). Then we will show that \(\mm\vpara{V} = \m\). 
+
+\ind \tr{Insert explanation here. The gist is we need to understand the conditional distribution of each boundary set of \(A\) given it's double neighborhood inside \(A\). We can do this by studying the same conditional distribution in a symmetry that takes the set inside \(A\). To do that, we start by computing the marginals of the double neighborhood, and the whole set under the application of symmetry.}
+
+\begin{lem}
+For all \(j \in \{1,\dots,\psize\}\), \(\proj\psf\vpara{\phi_j(\dgneigh{G}{B_j})}(\mm)\) is equal in distribution to the unique strong solution to the following equation:
+
+\begin{equation}
+\Xh\vind{v}\tme{t} = \Xh\vind{v}\tme{0} + \begin{cases}
+\int_\sta\int_{(0,t]\times (0,\infty)} \mb{I}_{r \leq \brate\gvpara{A}{v}\stpara{i}(s)}\,\poiss\poissv{v}(dr,ds,di)&\te{ if } v \in \phi_j(\dgneigh{G}{B_j})\cap \inte{A}\\
+\int_\sta\int_{(0,t]\times (0,\infty)} \mb{I}_{r \leq \bcrate\gvpara{A}{v}\stpara{i}(s)}\,\poiss\poissv{v}(dr,ds,di)&\te{ if } v \in \phi_j(\dgneigh{G}{B_j})\cap\gneigh{G}{B_{j'}}
+\end{cases}
+\label{Uq::marg1eqn}
+\end{equation}
+
+where \(j' \in \{1,\dots,\psize\}\) is not necessarily distinct from \(j\), and
+
+\begin{align}
+\bgrate\gvjpara{A}{v}{B_j}\stpara{i}(t) &\defeq \ex{\rate\gvpara{A}{v}\stpara{i}\left(\Xh\vind{\cl{v}}\tmi{[0,t)}\right)\middle|\Xh\vind{\phi_j(\dgneigh{G}{B_j})}\tmi{[0,t)}} \te{ if } v \in  \phi_j(\dgneigh{G}{B_j})\cap \inte{A} \label{Uq::brrt}\\
+\bcrate\gvjpara{A}{v}{B_j}\stpara{i}(t) &\defeq \ex{\brate\gvpara{A}{v}\stpara{i}\left(\Xh\vind{\dgneigh{G}{B_{j'}}}\tmi{[0,t)}\right)\middle| \Xh\vind{\phi_j(\dgneigh{G}{B_j})}\tmi{[0,t)}} \te{ if } v \in \phi_j(\dgneigh{G}{B_j})\cap\gneigh{G}{B_{j'}}\label{Uq::brcdrt}
+\end{align}
+\label{Uq::marg}
+\end{lem}
+\begin{proof}
+
+Let \(\rp = \pmap(\Xg)\) where \(\Xg \sim \mm\). By a direct application of \cite[Exercise 14.7.1]{DalVer08}, \(\rp\vind{\phi_j(\dgneigh{G}{B_j})}\) has \(\Xg\)-intensity \(\ratee\) given by,
+
+\begin{equation}
+\ratee(\rt,\mark) = \sum_{v \in\phi_j(\dgneigh{G}{B_j})\cap\inte{A}} \sum_{i \in \sta} \mb{I}_{\mark = i\ev{v}} \rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,\rt)}) + \sum_{j = 1}^\psize\sum_{v \in \phi_j(\dgneigh{G}{B_j})\cap\gneigh{G}{B_j}}\sum_{i\in \sta} \mb{I}_{\mark = i\ev{v}} \brate\gvpara{A}{v}\stpara{i}(\Xg\vind{\dgneigh{G}{B_j}}\tmi{[0,\rt)}).
+\label{Uq::Xg-int}
+\end{equation}
+
+Consider the following candidate for the \(\Xg\vind{\phi_j(\dgneigh{G}{B_j})}\)-intensity of \(\rp\), 
+
+\[\cratee(\rt,\mark) \defeq \exmu{\Xg \sim \mm}{\ratee(\rt,\mark)\middle|\Xg\vind{\phi_j(\dgneigh{G}{B_j})}\tmi{[0,\rt)}}.\]
+
+By lemma \ref{Ex::filtering}, it \(\cratee\) is the intensity if it has a \(\pr\times\Sm\)-a.s. left-continuous modification with respect to \(\rt\). Since \(\ratee\) is a countable sum of elements of which finitely many (one) are nonzero for any given argument \((\rt,\mark)\), it suffices to prove that the conditional expectation of each element of equation \eqref{Uq::Xg-int} is also left continuous. This leaves us with two cases.
+
+\begin{description}
+\item[Case 1: ] \(v \in \phi_j(\dgneigh{G}{B_j})\cap\inte{A}\).
+
+In this case, fix \(i,v\) and \(\mark = i\ev{v}\).
+
+\begin{align*}
+\cratee(\rt,\mark) &= \exmu{\Xg\sim\mm}{\ratee(\rt,\mark)\middle|\Xg\vind{\phi_j(\dgneigh{G}{B_j})}\tmi{[0,\rt)}} = \exmu{\Xg\sim\mm}{\rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,\rt)})\middle|\Xg\vind{\phi_j(\dgneigh{G}{B_j})}\tmi{[0,\rt)}}.
+\end{align*}
+
+Looking back at assumption \ref{Ex::Eassu}, our graph \(G\) is assumed to satisfy assumption \ref{a::gbasics}. Let \(A\) from the assumption be the same as the admissible set, \(A\), from this lemma. Let \(U = A\). \(\Xg\) from the assumption is precisely \(\rp\). \(\ratee\) satisfies the conditions of the intensity by assumption \ref{a::pbasics}. \(f_t\) from the assumption is just \(\rate\gvpara{A}{v}\stpara{i}(\cdot)\), which satisfies the continuity property by \ref{a::pbasics}. So, the conditions of assumption \ref{Ex::Eassu} hold in this case. Furthermore, from the conditions of lemma \ref{Ex::leftmod}, let \(W = W' = \phi_j(\dgneigh{G}{B_j})\). Then by lemma \ref{Ex::leftmod}, \(\cratee(\rt,\mark)\) has a left continuous modification wrt \(\rt\).
+
+\skipLine
+
+\item[Case 2: ] \(v \in \phi_j(\dgneigh{G}{B_j})\cap\gneigh{G}{B_{j'}}\) where \(j,j'\) are not necessarily distinct.
+
+In this case, fix \(i,v\) and \(\mark = i\ev{v}\).
+
+\begin{align*}
+\cratee(\rt,\mark) &= \exmu{\Xg\sim\mm}{\ratee(\rt,\mark)\middle|\Xg\vind{\phi_j(\dgneigh{G}{B_j})}\tmi{[0,\rt)}} = \exmu{\Xg\sim\mm}{\brate\gvpara{A}{v}\stpara{i}(\Xg\vind{\dgneigh{G}{B_{j'}}}\tmi{[0,\rt)})\middle|\Xg\vind{\phi_j(\dgneigh{G}{B_j})}\tmi{[0,\rt)}}.
+\end{align*}
+
+Looking back at assumption \ref{Ex::Eassu}, our graph \(G\) is assumed to satisfy assumption \ref{a::gbasics}. Let \(A\) from the assumption be the same as the admissible set, \(A\), from this lemma. Let \(U = A\). \(\Xg\) from the assumption is precisely \(\rp\). \(\ratee\) satisfies the conditions of the intensity by assumption \ref{a::pbasics}. \(f_t\) from the assumption is just \(\rate\gvpara{A}{v}\stpara{i}(\cdot)\), which satisfies the continuity property by \ref{a::pbasics}. So, the conditions of assumption \ref{Ex::Eassu} hold in this case. Furthermore, from the conditions of lemma \ref{Ex::leftmod}, let \(W = W' = \phi_j(\dgneigh{G}{B_j})\). Then by lemma \ref{Ex::leftmod}, \(\cratee(\rt,\mark)\) has a left continuous modification wrt \(\rt\).
+\end{description}
+\end{proof}
+
+Now we compute the marginal distribution of \(C_j\cap\dgneigh{G}{B_j}\) under symmetry. 
+%However, before doing that, we need a graph theoretic result:
+%
+%\begin{lem}
+%For all \(j \in \{1,\dots,\psize\}\), \(\phi_j(C_j)\cap \inte{A} = \emptyset\).
+%\label{Uq::symbdry}
+%\end{lem}
+%\begin{proof}
+%Fix \(j\). By assumption \ref{a::admissible}, there exists a \(j'\) such that \(\phi_j(C_{j'}^{(1)}) = C_j\) for some \(C_{j'}^{(1)}\) such that \(C_{j'}^{(1)} \subseteq B_j\). In fact, \(C_{j'}^{(1)} \subseteq \gneigh{C_j}\).
+%
+%\ind Then, since \(\phi_j(C_{j'}^{(1)}) = C_j\), we can conclude that \(\gneigh{G}{\phi_j(C_j)} \supseteq \phi_j 
+%\end{proof}
+
+\begin{lem}
+For all \(j \in \{1,\dots,\psize\}\), \(\proj\psf\vpara{\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)}(\mm)\) is equal in distribution to the unique strong solution to the following equation:
+
+\begin{equation}
+\Xh\vind{v}\tme{t} = \Xh\vind{v}\tme{0} + \begin{cases}
+\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \rate}
+\end{cases}
+\label{Uq::marg2eqn}
+\end{equation}
+\label{Uq::marg2}
+\end{lem}
+\begin{proof}
+The proof is similar to the proof of lemma \ref{Uq::marg}. Only there are more cases. Once again, let \(\Xg \sim \mm\), \(\rp = \pmap(\Xg)\). Then by \cite[Exercise 14.7.1]{DalVer08}, \(\rp\vind{\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)}\) has \(\Xg\)-intensity \(\ratee\) given by,
+
+\begin{equation}
+\ratee(\rt,\mark) = \sum_{v \in\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)\cap\inte{A}} \sum_{i \in \sta} \mb{I}_{\mark = i\ev{v}} \rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,\rt)}) + \sum_{j = 1}^\psize\sum_{v \in \phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)\cap\gneigh{G}{B_j}}\sum_{i\in \sta} \mb{I}_{\mark = i\ev{v}} \brate\gvpara{A}{v}\stpara{i}(\Xg\vind{\dgneigh{G}{B_j}}\tmi{[0,\rt)}).
+\label{Uq::Xg-int2}
+\end{equation}
+
+Consider the following candidate for the \(\Xg\vind{\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)}\)-intensity of \(\rp\), 
+
+\[\cratee(\rt,\mark) \defeq \exmu{\Xg \sim \mm}{\ratee(\rt,\mark)\middle|\Xg\vind{\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)}\tmi{[0,\rt)}}.\]
+
+By lemma \ref{Ex::filtering}, \(\cratee\) is the intensity if it has a \(\pr\times\Sm\)-a.s. left-continuous modification with respect to \(\rt\). Since \(\ratee\) is a countable sum of elements of which finitely many (one) are nonzero for any given argument \((\rt,\mark)\), it suffices to prove that the conditional expectation of each element of equation \eqref{Uq::Xg-int} is also left continuous. 
+
+\ind \tr{move this new argument to lemma \ref{Uq::marg}.}
+
+\ind Notice that \(G\) satisfies assumption \ref{a::gbasics}. Let \(A\) from assumption \ref{Ex::Eassu} be the same as our admissible set. Let \(U = A\). Let \(\Xg\) from assumption \ref{Ex::Eassu} be the same as \(\Xg\) in this context. The intensity satisfies the boundedness condition as a consequence of assumption \ref{a::pbasics}. For fixed \(\kappa\), \(\ratee\) can be considered a function satisfying the conditions of \(f_t\) from assumption \ref{Ex::Eassu}. Finally, in the conditions for lemma \ref{Ex::leftmod}, we can let \(W = W' = \phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)\). Thus, by lemma \ref{Ex::leftmod}, \(\cratee\) has a left-continuous modification.
+
+Now we evaluate \(\cratee\) for different \(\kappa\). Suppose \(\kappa = i\ev{v}\), where \(i \in \sta\) and \(v\in A\) are fixed.
+
+\begin{description}
+\item[Case 1: ] \(v \in \phi_j(C_j)\cap \inte{A}\)
+
+As in the proof of existence, we may consider \(\rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,\rt)})\) to be a \(\F\vpara{\phi_j(B_j\cup\dgneigh{G}{B_j})}\tpara{\rt-}\)-measurable random variable, and apply lemma C.1 (e) from the main paper to apply the conditional independence property below:
+
+\begin{align*}
+\cratee(\rt,\mark) &= \ex{\rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,\rt)})\middle|\Xg\vind{\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)}\tmi{[0,\rt)}}\\
+&=\ex{\rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,\rt)})\middle|\Xg\vind{\phi_j\left(C_j\cup\gneigh{G}{B_j}\right)}\tmi{[0,\rt)}}\\
+\end{align*}
+\end{description}
+\end{proof}
+
+
+
+
 \newpage
 \bibliographystyle{plain}
 \bibliography{weekly_refs}
