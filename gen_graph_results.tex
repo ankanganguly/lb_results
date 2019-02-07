@@ -145,9 +145,11 @@
 \newcommand{\crate}{\hat{\rate}}					%dneigh bdry rate
 \newcommand{\bgrate}{\ov{\rate}}					%gen bdry rate
 \newcommand{\bcrate}{\hat{\brate}}					%neigh bdry rate
+\newcommand{\mmm}{\eta}								%std msr
 
 %Modifications
 \newcommand{\gvjpara}[3]{^{#1,#2,#3}}				%include branch
+\newcommand{\pup}
 
 
 
@@ -230,7 +232,7 @@ In this context, define the \(\sta^V\)-valued c\`adl\`ag process \(\Xf\). For an
 
 Assuming equation \eqref{p::Xf} has a well-defined unique solution, this is the infinite-dimensional process whose marginals we are interested in.
 
-\ind Let \(\m\) be the law of \(\Xf\). We are primarily interested in the marginals of \(\m\). For any \(A \subseteq V\), let \(\proj\vpara{A}(\Xf)\) map \(\Xf\) to an \(\sta^A\)-valued process defined by \((\proj\vpara{A}(\Xf))\vind{v} = \Xf\vind{v}\) for all \(v\in A\). Then the \(A\)-marginal of \(\m\) is given by the push-forward measure \(\proj\vpara{A}\psf(\m)\). We may also be interested in restricting the process to some finite time interval \([0,T)\). In this case, we define \((\proj\vpara{A}\tpara{T}(\Xf))\vind{v}\tme{t} = \Xf\vind{v}\tme{t}\) for \(v \in A\) and \(t \in [0,T)\). The corresponding push-forward measure is given by \(\proj\vpara{A}\tparapsf{t}(\m)\).
+\ind Let \(\m\) be the law of \(\Xf\). We are primarily interested in the marginals of \(\m\). For any \(A \subseteq V\), let \(\proj\vpara{A}(\Xf)\) map \(\Xf\) to an \(\sta^A\)-valued process defined by \((\proj\vpara{A}(\Xf))\vind{v} = \Xf\vind{v}\) for all \(v\in A\). Then the \(A\)-marginal of \(\m\) is given by the push-forward measure \(\proj\vpara{A}\psf(\m)\). I will often use the shorthand \(\m\vpara{A} \defeq \proj\psf\vpara{A}(\m)\). We may also be interested in restricting the process to some finite time interval \([0,T)\). In this case, we define \((\proj\vpara{A}\tpara{T}(\Xf))\vind{v}\tme{t} = \Xf\vind{v}\tme{t}\) for \(v \in A\) and \(t \in [0,T)\). The corresponding push-forward measure is given by \(\proj\vpara{A}\tparapsf{T}(\m)\). Again, I will use the shorthand \(\m\vpara{A}\tpara{T} \defeq \proj\vpara{A}\tparapsf{T}(\m)\). \(\m\tpara{0} = \law(\Xf\tme{0})\).
 
 \subsubsection{Considering Simultaneous Jumps}
 \label{sim::p}
@@ -348,9 +350,9 @@ Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics}. \(G\) is said to be
 
 \item Let \(C_i = B_i\cap\neigh{A}\). For each \(i\), there exists a symmetry, \(\phi_i\), such that \(\phi_i(C_i\cup \dneigh{B_i}) \subset A\), and \(\phi_i(B_i\setminus C_i)\cap A = \emptyset\). \tr{The last one may be unnecessary, but it greatly simplifies the casework.}
 
-\item If we let \(A^{(1)} = A\cup \left(\bigcup_{i=1}^\psize C_i\right)\). Then \(A^{(1)}\) is also admissible with partition \(\{B^{(1)}_i\}_{i=1}^{\psize^{(1)}}\) and boundary nodes \(C^{(1)}_i = B^{(1)}_i\cap \neigh{A^{(1)}}\).
+\item If we let \(A\indx{1} = A\cup \left(\bigcup_{i=1}^\psize C_i\right)\). Then \(A\indx{1}\) is also admissible with partition \(\{B\indx{1}_i\}_{i=1}^{\psize\indx{1}}\) and boundary nodes \(C\indx{1}_i = B\indx{1}_i\cap \neigh{A\indx{1}}\).
 
-\item If \(C^{(1)}_{i'} \subseteq B_i\), then there exists a \(j\) so that \(\phi_i(C^{(1)}_{i'}) = C_j\). \tr{I think this is implied by the other conditions if \(A\) has a unique corresponding set of branches and boundary nodes.}
+\item If \(C\indx{1}_{i'} \subseteq B_i\), then there exists a \(j\) so that \(\phi_i(C\indx{1}_{i'}) = C_j\). \tr{I think this is implied by the other conditions if \(A\) has a unique corresponding set of branches and boundary nodes.}
 
 \item If \(\phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap\gneigh{G}{B_{j'}}\) is nonempty, then \(\phi_j(C_j)\cap\dgneigh{G}{B_{j'}} = \emptyset\). \tr{I suspect this can be proven using the points above. Try to do so or find a simpler set of assumptions that satisfy this.}
 \end{itemize}
@@ -653,9 +655,9 @@ Now we compute the marginal distribution of \(C_j\cap\dgneigh{G}{B_j}\) under sy
 %\label{Uq::symbdry}
 %\end{lem}
 %\begin{proof}
-%Fix \(j\). By assumption \ref{a::admissible}, there exists a \(j'\) such that \(\phi_j(C_{j'}^{(1)}) = C_j\) for some \(C_{j'}^{(1)}\) such that \(C_{j'}^{(1)} \subseteq B_j\). In fact, \(C_{j'}^{(1)} \subseteq \gneigh{C_j}\).
+%Fix \(j\). By assumption \ref{a::admissible}, there exists a \(j'\) such that \(\phi_j(C_{j'}\indx{1}) = C_j\) for some \(C_{j'}\indx{1}\) such that \(C_{j'}\indx{1} \subseteq B_j\). In fact, \(C_{j'}\indx{1} \subseteq \gneigh{C_j}\).
 %
-%\ind Then, since \(\phi_j(C_{j'}^{(1)}) = C_j\), we can conclude that \(\gneigh{G}{\phi_j(C_j)} \supseteq \phi_j 
+%\ind Then, since \(\phi_j(C_{j'}\indx{1}) = C_j\), we can conclude that \(\gneigh{G}{\phi_j(C_j)} \supseteq \phi_j 
 %\end{proof}
 
 \begin{lem}
@@ -727,7 +729,32 @@ First, by assumption \ref{a::admissible}, \(\phi_j(C_j)\cap\dgneigh{G}{B_{j'}}= 
 The lemma follows by direct application of \cite[Exercise 14.7.1]{DalVer08}.
 \end{proof}
 
-As we extend \(\mm\) to larger processes, 
+As we extend \(\mm\) to larger processes, it's easiest to look at these larger processes in terms of their density with respect to a standard process.
+
+\begin{defn}
+Let \(\poiss\) be a Poisson random measure on \(\sta\times\mb{R}^2\) with intensity \(\Sm\times\leb\). Define \(\Xh\) by,
+
+\[\Xh\vind{v}\tme{t} = \Xh\vind{v}\tme{0} + \int_{\sta}\int_{(0,t]\times (0,1]}\,\poiss(dr,ds,di).\]
+
+Let \(\mmm = \law(\Xh)\). Suppose \(\mm\vpara{v}\tpara{0}\ll\mmm\tpara{0}\) for all \(v\in A\). Let \(\{\mmm\vind{v}:v\in V\}\) be the distributions of a sequence of i.i.d. copies of the measure \(\mmm\). For any \(U\subseteq V\), let 
+
+\[\mmm\vpara{U} = \otimes_{v\in U} \mm\vpara{v}.\]
+
+Finally, for any \(T < \infty\) and \(t\in [0,T)\), let \(\mm\vpara{U}\tpara{t}\) be the restriction of \(\mm\vpara{U}\) to c\`adl\`ag processes defined on \([0,T)\) (see section \ref{p::not}).
+\label{Uq::eta}
+\end{defn}
+
+We now have to describe how to extend the graph \(G\vind{A}\).
+
+\begin{defn}
+As in assumption \ref{a::admissible}, let \(A\indx{1} = A\cup\left(\bigcup_{i=1}^\Sm C_i\right)\). By assumption \ref{a::admissible}, we can find branches of \(A\indx{1}\), \(\{B_i\indx{1}\}_{i=1}^{\Sm\indx{1}}\). Let \(C_i\indx{1} = B_i\indx{1}\cap\gneigh{G}{A\indx{1}}\). Finally, for all \(i = 1,\dots,\Sm\indx{1}\), let \(\phi_i\indx{1}\) be a symmetry of \(\Xf\) mapping \(C_i\indx{1}\cup \dgneigh{G}{B\indx{1}_i}\) to a subset of \(A\). We can assume without loss of generality that \(\phi_i\indx{1}(C_i\indx{1}\cup \dgneigh{G}{B\indx{1}_i}) = \phi_{j\indx{1}_i}(C_{j\indx{1}_i}\cup\dgneigh{G}{B_{j\indx{1}_i}})\) for some \(j\indx{1}_i \in \{1,\dots,\Sm\}\).
+
+\ind In general, let \(A\indx{k+1} = A\indx{k} \cup \left(\bigcup_{i=1}^{\Sm\indx{k}} C_i\indx{k}\right)\). Again, by assumption \ref{a::admissible}, there exist branches of \(A\indx{k+1}\), \(\{B_i\indx{k+1}\}_{i=1}^{\Sm\indx{k+1}}\). Let \(C_i\indx{k+1} = B_i\indx{k+1}\cap \gneigh{G}{A\indx{k+1}}\). Finally, for all \(i=1,\dots,\Sm\indx{k+1}\), \(\phi_i\indx{k+1}\) is the symmetry of \(\Xf\) mapping \(C_i\indx{k+1}\cup\dgneigh{G}{B_i\indx{k+1}}\) to \(\phi_{j\indx{k+1}_i}(C_{j\indx{k+1}_i}\cup\dneigh{G}{B_{j\indx{k+1}_i}})\) for some \(j\indx{k+1}_i \in \{1,\dots,\Sm\}\).
+\end{defn}
+
+\begin{lem}
+hi
+\end{lem}
 
 
 
