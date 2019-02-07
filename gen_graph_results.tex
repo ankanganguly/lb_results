@@ -346,13 +346,16 @@ Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics}. \(G\) is said to be
 
 \item \(\dneigh{B_i} \subseteq A\) for all \(i\).
 
-\item Let \(C_i = B_i\cap\neigh{A}\). For each \(i\), there exists a symmetry, \(\phi_i\), such that \(\phi_i(C_i\cup \dneigh{B_i})\defeq D_i \subset A\).
+\item Let \(C_i = B_i\cap\neigh{A}\). For each \(i\), there exists a symmetry, \(\phi_i\), such that \(\phi_i(C_i\cup \dneigh{B_i}) \subset A\), and \(\phi_i(B_i\setminus C_i)\cap A = \emptyset\). \tr{The last one may be unnecessary, but it greatly simplifies the casework.}
 
-\item \tr{revise: look at lemma \ref{Uq::symbdry}} If we let \(A^{(1)} = A\cup \left(\bigcup_{i=1}^\psize C_i\right)\). Then \(A^{(1)}\) is also admissible with partition \(\{B^{(1)}_i\}_{i=1}^{\psize^{(1)}}\). Let \(C^{(1)}_i = B^{(1)}_i\cap \neigh{A^{(1)}}\). Then for any \(i = 1,\dots,\psize^{(1)}\), there exists a \(j \in \{1,\dots,\psize\}\) such that \(\phi_j(C^{(1)}_i)= C_{i'}\) for some \(i' = 1,\dots,\psize\), and \(\phi_j(C^{(1)}_i\cap \dneigh{B^{(1)}_i}) = C_{i'}\cap \dneigh{B_{i'}}\). Furthermore, for every \(i \in \{1,\dots,\psize\}\), there exists some \(i' \in \{1,\dots,\psize^{(1)}\}\) and \(j \in \{1,\dots,\psize\}\) such that \(\phi_j(C_{i'}^{(1)}) = C_i\) and \(\phi_j(C_{i'}^{(1)}\cup\dneigh{B^{(1)}_{i'}}) = C_i\cup\dneigh{B_i}\). Notice that this definition is recursive.
+\item If we let \(A^{(1)} = A\cup \left(\bigcup_{i=1}^\psize C_i\right)\). Then \(A^{(1)}\) is also admissible with partition \(\{B^{(1)}_i\}_{i=1}^{\psize^{(1)}}\) and boundary nodes \(C^{(1)}_i = B^{(1)}_i\cap \neigh{A^{(1)}}\).
 
+\item If \(C^{(1)}_{i'} \subseteq B_i\), then there exists a \(j\) so that \(\phi_i(C^{(1)}_{i'}) = C_j\). \tr{I think this is implied by the other conditions if \(A\) has a unique corresponding set of branches and boundary nodes.}
+
+\item If \(\phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap\gneigh{G}{B_{j'}}\) is nonempty, then \(\phi_j(C_j)\cap\dgneigh{G}{B_{j'}} = \emptyset\). \tr{I suspect this can be proven using the points above. Try to do so or find a simpler set of assumptions that satisfy this.}
 \end{itemize}
 
-The set \(A\) is called an admissible set. \(\{B_i\}_{i=1}^\psize\) will be referred to as the set of branches of \(A\). \(\psize\) is the branching number of \(A\). \(\{C_i\}_{i=1}^\psize\) will be called the boundary nodes of \(A\). \(r_i\) will be the branch reflections of \(A\).
+The set \(A\) is called an admissible set. \(\{B_i\}_{i=1}^\psize\) will be referred to as the set of branches of \(A\). \(\psize\) is the branching number of \(A\). \(\{C_i\}_{i=1}^\psize\) will be called the boundary nodes of \(A\).
 
 \ind \tr{Right now I'm just adding assumptions whenever I need them (after making sure load-balancing satisfies them).}
 \label{a::admissible}
@@ -660,10 +663,15 @@ For all \(j \in \{1,\dots,\psize\}\), \(\proj\psf\vpara{\phi_j\left(C_j\cup\dgne
 
 \begin{equation}
 \Xh\vind{v}\tme{t} = \Xh\vind{v}\tme{0} + \begin{cases}
-\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \rate}
+\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \brate\gvpara{A}{v}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di).\te{ if } v \in \phi_j(C_j)\\
+\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \rate\gvpara{A}{v}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di).\te{ if } v \in \phi_j(\gneigh{G}{B_j})\\
+\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \bgrate\gvjpara{A}{v}{B_j}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di).\te{ if } v \in \phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap\inte{A}\\
+\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \bcrate\gvjpara{A}{v}{B_j}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di).\te{ if } v \in \phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap\gneigh{G}{B_{j'}}\\
 \end{cases}
 \label{Uq::marg2eqn}
 \end{equation}
+
+where \(\rate,\brate,\bgrate\) and \(\bcrate\) are as defined in lemma \ref{Uq::marg}, theorem \ref{Main::Main}, assumption \ref{a::pbasics} and assumption \ref{a::admissible}.
 \label{Uq::marg2}
 \end{lem}
 \begin{proof}
@@ -684,20 +692,42 @@ By lemma \ref{Ex::filtering}, \(\cratee\) is the intensity if it has a \(\pr\tim
 
 \ind Notice that \(G\) satisfies assumption \ref{a::gbasics}. Let \(A\) from assumption \ref{Ex::Eassu} be the same as our admissible set. Let \(U = A\). Let \(\Xg\) from assumption \ref{Ex::Eassu} be the same as \(\Xg\) in this context. The intensity satisfies the boundedness condition as a consequence of assumption \ref{a::pbasics}. For fixed \(\kappa\), \(\ratee\) can be considered a function satisfying the conditions of \(f_t\) from assumption \ref{Ex::Eassu}. Finally, in the conditions for lemma \ref{Ex::leftmod}, we can let \(W = W' = \phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)\). Thus, by lemma \ref{Ex::leftmod}, \(\cratee\) has a left-continuous modification.
 
-Now we evaluate \(\cratee\) for different \(\kappa\). Suppose \(\kappa = i\ev{v}\), where \(i \in \sta\) and \(v\in A\) are fixed.
+\ind Now we evaluate \(\cratee\) for different \(\kappa\). Suppose \(\kappa = i\ev{v}\), where \(i \in \sta\) and \(v\in A\) are fixed.
 
 \begin{description}
-\item[Case 1: ] \(v \in \phi_j(C_j)\cap \inte{A}\)
+\item[Case 1: ] \(v \in \phi_j(C_j)\).
 
-As in the proof of existence, we may consider \(\rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,\rt)})\) to be a \(\F\vpara{\phi_j(B_j\cup\dgneigh{G}{B_j})}\tpara{\rt-}\)-measurable random variable, and apply lemma C.1 (e) from the main paper to apply the conditional independence property below:
+By assumption \ref{a::admissible}, \(\cl{v} \cap A \subseteq \phi_j(C_j\cup \gneigh{G}{B_j})\), and \(v \in A\setminus\inte{A}\). Thus, \(\cratee(\rt,\mark) = \brate\gvpara{A}{v}\stpara{i}(\rt)\).
+
+\item[Case 2: ] \(v\in \phi_j(\gneigh{G}{B_j})\). 
+
+Because \(\phi_j\) is a self-isomorphism, \(\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right) \subseteq A\) and \(\cl{v} \subseteq C_j\cup\dgneigh{G}{B_j}\), we can conclude that \(v \in \inte{A}\). Since \(\rate\gvpara{A}{v}\stpara{i}(\rt)\) is \(\F\vpara{C_j\cup\dgneigh{G}{B_j}}\tpara{\rt-}\)-measurable, we can conclude that \(\cratee(\rt,\mark) = \rate\gvpara{A}{v}\stpara{i}(\rt)\).
+
+\item[Case 3: ] \(v \in \phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap\inte{A}\).
+
+Because \(\Xg\sim\mm\), \(\ratee(\rt,\mark) = \rate\gvpara{A}{v}\stpara{i}(\rt)\) which is \(\F\vpara{\cl{v}}\tpara{\rt-}\)-measurable. We can consider this to be a measurable function of \(\Xg\vind{A\setminus\phi_j(C_j)}\tmi{[0,\rt)}\). By applying lemma C.1 (e) of the main paper, we get
 
 \begin{align*}
-\cratee(\rt,\mark) &= \ex{\rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,\rt)})\middle|\Xg\vind{\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)}\tmi{[0,\rt)}}\\
-&=\ex{\rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,\rt)})\middle|\Xg\vind{\phi_j\left(C_j\cup\gneigh{G}{B_j}\right)}\tmi{[0,\rt)}}\\
+\cratee(\rt,\mark) &= \ex{\rate\gvpara{A}{v}\stpara{i}(\rt)\middle|\Xg\vind{\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)}\tmi{[0,\rt)}}\\
+&= \ex{\rate\gvpara{A}{v}\stpara{i}(\rt)\middle|\Xg\vind{\phi_j\left(\dgneigh{G}{B_j}\right)}\tmi{[0,\rt)}}\\
+&= \bgrate\gvjpara{A}{v}{B_j}\stpara{i}\tme{\rt}.
+\end{align*}
+
+\item[Case 4: ] \(v \in \phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap \gneigh{G}{B_{j'}}\) for some \(j'\) not necessarily distinct from \(j\).
+
+First, by assumption \ref{a::admissible}, \(\phi_j(C_j)\cap\dgneigh{G}{B_{j'}}= \emptyset\). Because \(\Xg\sim\mm\), \(\ratee(\rt,\mark) = \brate\gvpara{A}{v}\stpara{i}(\rt)\) which is \(\F\vpara{\dgneigh{G}{B_{j'}}}\tpara{\rt-}\)-measurable. We can consider this to be a measurable function of \(\Xg\vind{A\setminus\phi_j(C_j)}\tmi{[0,\rt)}\). By applying lemma C.1 (e) of the main paper, we get
+
+\begin{align*}
+\cratee(\rt,\mark) &= \ex{\brate\gvpara{A}{v}\stpara{i}(\rt)\middle|\Xg\vind{\phi_j\left(C_j\cup\dgneigh{G}{B_j}\right)}\tmi{[0,\rt)}}\\
+&= \ex{\brate\gvpara{A}{v}\stpara{i}(\rt)\middle|\Xg\vind{\phi_j\left(\dgneigh{G}{B_j}\right)}\tmi{[0,\rt)}}\\
+&= \bcrate\gvjpara{A}{v}{B_j}\stpara{i}\tme{\rt}.
 \end{align*}
 \end{description}
+
+The lemma follows by direct application of \cite[Exercise 14.7.1]{DalVer08}.
 \end{proof}
 
+As we extend \(\mm\) to larger processes, 
 
 
 
