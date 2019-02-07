@@ -205,6 +205,12 @@ Remark: In this paper I mostly work with locally finite graphs. However, I prove
 \item Make sure modifications made to \(\gneigh{G}{v}\) and \(dgneigh{G}{v}\) are properly placed in the paper.
 
 \item Bad notation! I use \(i\) to indicate elements of \(\sta\) and to enumerate branches of \(A\).
+
+\item I often state that certain finite-dimensional SDEs have a unique strong solution and then leave it at that. Reference the relevant lemma in the main paper.
+
+\item Introduce notation for c\`adl\`ag processes. Otherwise things are too awkward.
+
+\item The conditional expectations in lemma \ref{Ex::leftmod} may not be well-defined. Add assumptions to make sure they are. Then make sure I use those assumptions everywhere where I cite lemma \ref{Ex::leftmod}.
 \end{itemize}
 
 
@@ -752,11 +758,31 @@ As in assumption \ref{a::admissible}, let \(A\indx{1} = A\cup\left(\bigcup_{i=1}
 \ind In general, let \(A\indx{k+1} = A\indx{k} \cup \left(\bigcup_{i=1}^{\Sm\indx{k}} C_i\indx{k}\right)\). Again, by assumption \ref{a::admissible}, there exist branches of \(A\indx{k+1}\), \(\{B_i\indx{k+1}\}_{i=1}^{\Sm\indx{k+1}}\). Let \(C_i\indx{k+1} = B_i\indx{k+1}\cap \gneigh{G}{A\indx{k+1}}\). Finally, for all \(i=1,\dots,\Sm\indx{k+1}\), \(\phi_i\indx{k+1}\) is the symmetry of \(\Xf\) mapping \(C_i\indx{k+1}\cup\dgneigh{G}{B_i\indx{k+1}}\) to \(\phi_{j\indx{k+1}_i}(C_{j\indx{k+1}_i}\cup\dneigh{G}{B_{j\indx{k+1}_i}})\) for some \(j\indx{k+1}_i \in \{1,\dots,\Sm\}\).
 \end{defn}
 
+And now we begin the core argument. Here we construct a sequence of processes on a sequence of increasing spaces whose marginal distributions are consistent with each other and \(\mm\).
+
 \begin{lem}
-hi
+Fix \(k \in \mb{N}\). Let \(\mm\indx{k} = \law(\Xg\indx{k})\) where \(\Xg\indx{k}\) is the unique strong solution to the following SDE:
+
+\begin{equation}
+\Xg\indx{k}\vind{v}\tme{t} = \Xg\indx{k}\vind{v}\tme{0} + 
+\begin{cases}
+\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \brate\gvpara{A\indx{k}}{v}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di) &\te{ if } v \in A\indx{k}\setminus A\indx{k-1}\\
+\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \rate\gvpara{A\indx{k}}{v}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di) &\te{ if } v \in A\indx{k}\setminus A\indx{k-1}
+\end{cases}.
+\label{Uq::exteqn}
+\end{equation}
+
+Here \(\brate\) is defined by,
+
+\[\brate\gvpara{A\indx{k}}{v}\stpara{i}(t) \defeq \exmu{\Xh\sim \mm}{\rate\gvpara{A}{\phi_j\indx{k}(v)}\stpara{i}(\Xh\vind{\cl{\phi_j\indx{k}(v)}}\tmi{[0,t)}\middle|\Xh\vind{\phi_j\left(\dgneigh{G}{B\indx{k}_j}\right)}\tmi{[0,t)} = \Xg\indx{k}\vind{\dgneigh{G}{B\indx{k}_j}}\tmi{[0,t)}} \te{ for } A\indx{k}\te{ admissible, and } v \in \gneigh{G}{B\indx{k}_j}.\]
+
+Then for any \(k' \leq k\), \(\proj\psf\vpara{A\indx{k'}}(\mm\indx{k}) = \mm\indx{k'}\) and \(\proj\psf\vpara{A}(\mm\indx{k}) = \mm\).
+\label{Uq::ext}
 \end{lem}
 
-
+\begin{proof}
+stuff
+\end{proof}
 
 \newpage
 \bibliographystyle{plain}
