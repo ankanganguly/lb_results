@@ -146,11 +146,18 @@
 \newcommand{\bgrate}{\ov{\rate}}					%gen bdry rate
 \newcommand{\bcrate}{\hat{\brate}}					%neigh bdry rate
 \newcommand{\mmm}{\eta}								%std msr
+\newcommand{\ds}{\Upsilon}							%Radon mapping
+\newcommand{\dense}{L}								%density
+\newcommand{\densen}{N}								%density of dneigh
+\newcommand{\denseph}{\alt{N}}						%density of CUdneigh
+\newcommand{\mdense}{M}								%marge density
+\newcommand{\xg}{y}									%small \Xg
 
 %Modifications
 \newcommand{\gvjpara}[3]{^{#1,#2,#3}}				%include branch
-\newcommand{\pup}
-
+\newcommand{\prc}[1]{_{#1}}							%wrt a msr
+\renewcommand{\it}[1]{_{#1}}						%iterator
+\newcommand{\jpara}[1]{^{#1}}						%B_j dependence
 
 
 
@@ -361,6 +368,8 @@ Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics}. \(G\) is said to be
 \item If \(C\indx{1}_{i'} \subseteq B_i\), then there exists a \(j\) so that \(\phi_i(C\indx{1}_{i'}) = C_j\). \tr{I think this is implied by the other conditions if \(A\) has a unique corresponding set of branches and boundary nodes.}
 
 \item If \(\phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap\gneigh{G}{B_{j'}}\) is nonempty, then \(\phi_j(C_j)\cap\dgneigh{G}{B_{j'}} = \emptyset\). \tr{I suspect this can be proven using the points above. Try to do so or find a simpler set of assumptions that satisfy this.}
+
+\item If \(\phi_j(C_j) \cap \gneigh{G}{B_{j'}}\) is nonempty, then \(\dgneigh{G}{B_{j'}} \subseteq \phi_j(C_j\cup\dgneigh{G}{B_j})\).
 \end{itemize}
 
 The set \(A\) is called an admissible set. \(\{B_i\}_{i=1}^\psize\) will be referred to as the set of branches of \(A\). \(\psize\) is the branching number of \(A\). \(\{C_i\}_{i=1}^\psize\) will be called the boundary nodes of \(A\).
@@ -705,7 +714,7 @@ By lemma \ref{Ex::filtering}, \(\cratee\) is the intensity if it has a \(\pr\tim
 \begin{description}
 \item[Case 1: ] \(v \in \phi_j(C_j)\).
 
-By assumption \ref{a::admissible}, \(\cl{v} \cap A \subseteq \phi_j(C_j\cup \gneigh{G}{B_j})\), and \(v \in A\setminus\inte{A}\). Thus, \(\cratee(\rt,\mark) = \brate\gvpara{A}{v}\stpara{i}(\rt)\).
+By assumption \ref{a::admissible}, \(\dgneigh{G}{B_{j'}} \subseteq \phi_j(C_j\cup \gneigh{G}{B_j})\), and \(v \in A\setminus\inte{A}\). Thus, \(\cratee(\rt,\mark) = \brate\gvpara{A}{v}\stpara{i}(\rt)\).
 
 \item[Case 2: ] \(v\in \phi_j(\gneigh{G}{B_j})\). 
 
@@ -740,9 +749,11 @@ As we extend \(\mm\) to larger processes, it's easiest to look at these larger p
 \begin{defn}
 Let \(\poiss\) be a Poisson random measure on \(\sta\times\mb{R}^2\) with intensity \(\Sm\times\leb\). Define \(\Xh\) by,
 
-\[\Xh\vind{v}\tme{t} = \Xh\vind{v}\tme{0} + \int_{\sta}\int_{(0,t]\times (0,1]}\,\poiss(dr,ds,di).\]
+\[\Xh\vind{v}\tme{t} = \Xh\vind{v}\tme{0} + \int_{\sta}\int_{(0,t]\times (0,p_i]}\,\poiss(dr,ds,di).\]
 
-Let \(\mmm = \law(\Xh)\). Suppose \(\mm\vpara{v}\tpara{0}\ll\mmm\tpara{0}\) for all \(v\in A\). Let \(\{\mmm\vind{v}:v\in V\}\) be the distributions of a sequence of i.i.d. copies of the measure \(\mmm\). For any \(U\subseteq V\), let 
+where \(\{p_i\}_{i\in \sta}\) are a sequence of positive real numbers such that \(\sum_{i\in \sta}p_i = 1\). 
+
+\ind Let \(\mmm = \law(\Xh)\). Suppose \(\mm\vpara{v}\tpara{0}\ll\mmm\tpara{0}\) for all \(v\in A\). Let \(\{\mmm\vind{v}:v\in V\}\) be the distributions of a sequence of i.i.d. copies of the measure \(\mmm\). For any \(U\subseteq V\), let 
 
 \[\mmm\vpara{U} = \otimes_{v\in U} \mm\vpara{v}.\]
 
@@ -781,7 +792,78 @@ Then for any \(k' \leq k\), \(\proj\psf\vpara{A\indx{k'}}(\mm\indx{k}) = \mm\ind
 \end{lem}
 
 \begin{proof}
-stuff
+Let \(\mmm\vind{V}\) be as defined in definition \ref{Uq::eta}. Recall that \(\rp\defeq \pmap(\Xg)\) maps \(\Xg\) (the solution to equations \eqref{Main::local}-\eqref{Main::fixed}) to a point process coinciding with the jumps of \(\Xg\). This point process has intensity,
+
+\[\ratee\prc{\mm}(\rt,\mark) = \begin{cases}
+\brate\gvpara{A}{v}\stpara{i}\tme{\rt} &\te{ if } v \in A\setminus\inte{A}\te{ and } \mark = i\ev{v}\\
+\rate\gvpara{A}{v}\stpara{i}\tme{\rt} &\te{ if } v \in \inte{A}\te{ and } \mark = i\ev{v}\\
+0 &\te{ otherwise}
+\end{cases}.\]
+
+Let \(\mmm\indx{0} \defeq \mmm\vpara{A}\). Then \(\pmap\psf(\mmm\indx{0})\) has intensity,
+
+\[\ratee\prc{\mmm\indx{0}}(\rt,\mark) = 
+\begin{cases}
+p_i &\te{ if } \mark= i\ev{v}\te{ and } v\in A\\
+0 &\te{ otherwise}
+\end{cases}.\]
+
+\tr{Later be more precise here.} Define the following mapping where \(f\) is a function and \(\Xh\) is a c\'adl\`ag process. Suppose the \(k\)th jump of the \(v\)th component of \(\Xh\) happens at time \(\rt\vpara{v}\it{k}\), and \(\Xh\tme{\rt\vpara{v}\it{k}} - \Xh\tme{\rt\vpara{v}\it{k}-} = \mark\vpara{v}\it{k}\). 
+
+\begin{equation}
+\ds\vpara{v}\tpara{t}(\Xh,f): = \sum_{0 < \rt\vpara{v}\it{k}\leq t} \log \frac{f(\Xh\tmi{[0,\rt\vpara{v}\it{k})},\mark\vpara{v}\it{k})}{p\it{\mark\vpara{v}\it{k}}} - \int_{\sta\times[0,t)} [f(\Xh\tmi{[0,s)},i) - p\it{i}]\,\Sm(di)\,ds.
+\label{Uq::ds}
+\end{equation}
+
+Now, let \(\{(\rt\it{k},\mark\it{k}):k\in\mb{N}\}\) be the events of \(\pmap(\Xg)\). Let \(\mark\it{k} = i\it{k}\ev{v\it{k}}\). Let \(\{(\rt\it{k}\vpara{v},\mark\it{k}\vpara{v}):k\in\mb{N}\}\) be the events of \(\pmap\vpara{v}(\Xg)\). Note that \(\mark\it{k}\vpara{v} \in \sta\). Then by \tr{lemma B.11?}
+
+\begin{align*}
+\dense\tpara{t}(\Xg)&\defeq \frac{d\mm\tpara{t}}{d\mmm\tpara{t}\indx{0}}\\
+&= \frac{d\mm\tpara{0}}{d\mmm\tpara{0}\indx{0}}\exp\left(\sum_{0< \rt\it{k}\leq t} \log\frac{\ratee\prc{\mm}(\rt\it{k},\mark\it{k})}{p_{i\it{k}}} - \sum_{v \in A}\int_{\sta\times (0,t]} [\ratee\prc{\mm}(s,i) - p_i]\,\Sm(di)\,ds\right)\\
+&= \frac{d\mm\tpara{0}}{d\mmm\tpara{0}\indx{0}}\exp\Bigg(\sum_{v \in A\setminus\inte{A}}\left(\sum_{0 < \rt\it{k}\vpara{v}\leq t} \log\frac{\brate\gvpara{A}{v}\stpara{\mark\it{k}\vpara{v}}(\rt\it{k}\vpara{v})}{p_{\mark\it{k}\vpara{v}}} - \int_{\sta\times (0,t]} [\brate\gvpara{A}{v}\stpara{i}(s) - p_i]\,\Sm(di)\,ds\right) \\
+&\hspace{24 pt} + \sum_{v \in \inte{A}}\left(\sum_{0 < \rt\it{k}\vpara{v}\leq t} \log\frac{\rate\gvpara{A}{v}\stpara{\mark\it{k}\vpara{v}}(\rt\it{k}\vpara{v})}{p_{\mark\it{k}\vpara{v}}} - \int_{\sta\times (0,t]} [\rate\gvpara{A}{v}\stpara{i}(s) - p_i]\,\Sm(di)\,ds\right)\Bigg)\\
+&= \frac{d\mm\tpara{0}}{d\mmm\tpara{0}\indx{0}}\exp\left(\sum_{j=1}^{\psize}\sum_{v\in \gneigh{G}{B_j}} \ds\vpara{v}\tpara{t}(\Xg\vind{\dgneigh{G}{B_j}},\brate\gvpara{A}{v}\stpara{\cdot}) + \sum_{v\in\inte{A}}\ds\vpara{v}\tpara{t}(\Xg\vind{\cl{v}},\rate\gvpara{A}{v}\stpara{\cdot})\right).
+\end{align*}
+
+By a similar computation, apply lemma \ref{Uq::marg} to get,
+
+\begin{align*}
+\densen\jpara{j}\tpara{t}(\Xg\vind{\phi_j(\dgneigh{G}{B_j})}) &\defeq \frac{d\mm\vpara{\phi_j(\dgneigh{G}{B_j})}\tpara{t}}{d\mmm\vpara{\phi_j(\dgneigh{G}{B_j})}\tpara{t}}\\
+&= \frac{d\mm\vpara{\phi_j(\dgneigh{G}{B_j})}\tpara{0}}{d\mmm\vpara{\phi_j(\dgneigh{G}{B_j})}\tpara{0}}\exp\Bigg(\sum_{j'=1}^\psize \sum_{v \in \phi_j(\dgneigh{G}{B_j})\cap \gneigh{G}{B_{j'}}} \ds\vpara{v}\tpara{t}\left(\Xg\vind{\phi_j(\dgneigh{G}{B_j})},\bcrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right)\\
+&\hspace{24 pt} + \sum_{v \in \phi_j(\dgneigh{G}{B_j})\cap\inte{A}} \ds\vpara{v}\tpara{t}\left(\Xg\vind{\phi_j(\dgneigh{G}{B_j})},\bgrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right)\Bigg)
+\end{align*}
+
+Apply lemma \ref{Uq::marg2} and another similar computation to get,
+
+\begin{align*}
+\denseph\jpara{j}\tpara{t}(\Xg\vind{\phi_j(C_j\cup \dgneigh{G}{B_j})}) &\defeq \frac{d\mm\vpara{\phi_j(C_j\cup \dgneigh{G}{B_j})}\tpara{t}}{d\mmm\vpara{\phi_j(C_j\cup \dgneigh{G}{B_j})}\tpara{t}}\\
+&= \frac{d\mm\vpara{\phi_j(C_j\cup \dgneigh{G}{B_j})}\tpara{0}}{d\mmm\vpara{\phi_j(C_j\cup \dgneigh{G}{B_j})}\tpara{0}}\exp\Bigg(\sum_{j' = 1}^{\psize}\sum_{v \in \phi_j(C_j)\cap\gneigh{G}{B_{j'}}} \ds\vpara{v}\tpara{t}\left(\Xg\vind{\dgneigh{G}{B_{j'}}},\brate\gvpara{A}{v}\stpara{\cdot}\right) + \sum_{v \in \phi_j(\gneigh{G}{B_j})} \ds\vpara{v}\tpara{t}\left(\Xg\vind{\cl{v}},\rate\gvpara{A}{v}\stpara{\cdot}\right)\\
+&\hspace{24pt} + \sum_{j'=1}^\psize \sum_{v \in \phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap \gneigh{G}{B_{j'}}} \ds\vpara{v}\tpara{t}\left(\Xg\vind{\phi_j(\dgneigh{G}{B_j})},\bcrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right)\\
+&\hspace{24 pt} + \sum_{v \in \phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap\inte{A}} \ds\vpara{v}\tpara{t}\left(\Xg\vind{\phi_j(\dgneigh{G}{B_j})},\bgrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right)\Bigg)
+\end{align*}
+
+Applying the fact that \(\mm\tpara{0}\) is assumed to be a product measure,
+
+\begin{align*}
+\mdense\jpara{j}\tpara{t}(\Xg\vind{\phi_j(C_j)};\xg\vind{\phi_j(\dgneigh{G}{B_j})}) &\defeq \frac{\denseph\jpara{j}\tpara{t}(\Xg\vind{\phi_j(C_j)};\xg\vind{\phi_j(\dgneigh{G}{B_j})})}{\densen\jpara{j}\tpara{t}(\xg\vind{\phi_j(\dgneigh{G}{B_j})})}\\
+&= \frac{\frac{d\mm\vpara{\phi_j(C_j\cup \dgneigh{G}{B_j})}\tpara{0}}{d\mmm\vpara{\phi_j(C_j\cup \dgneigh{G}{B_j})}\tpara{0}}}{\frac{d\mm\vpara{\phi_j(\dgneigh{G}{B_j})}\tpara{0}}{d\mmm\vpara{\phi_j(\dgneigh{G}{B_j})}\tpara{0}}}\exp\Bigg(\sum_{j' = 1}^{\psize}\sum_{v \in \phi_j(C_j)\cap\gneigh{G}{B_{j'}}} \ds\vpara{v}\tpara{t}\left(\Xg\vind{\dgneigh{G}{B_{j'}}\cap\phi_j(C_j)};\xg\vind{\dgneigh{G}{B_{j'}}\cap\phi_j(\dgneigh{G}{B_j})},\brate\gvpara{A}{v}\stpara{\cdot}\right)\\
+&\hspace{24pt} + \sum_{v \in \phi_j(\gneigh{G}{B_j})} \left(\ds\vpara{v}\tpara{t}\left(\Xg\vind{\cl{v}\cap\phi_j(C_j)};\xg\vind{\cl{v}\cap\phi_j(\dgneigh{G}{B_j})},\rate\gvpara{A}{v}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\vind{\phi_j(\dgneigh{G}{B_j})},\bgrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right)\right)\\
+&\hspace{24pt} +  \sum_{j'=1}^\psize \sum_{v \in \phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap \gneigh{G}{B_{j'}}} \left(\ds\vpara{v}\tpara{t}\left(\xg\vind{\phi_j(\dgneigh{G}{B_j})},\bcrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\vind{\phi_j(\dgneigh{G}{B_j})},\bcrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right)\right)\\
+&\hspace{24pt} +  \sum_{v \in \phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap\inte{A}} \left(\ds\vpara{v}\tpara{t}\left(\xg\vind{\phi_j(\dgneigh{G}{B_j})},\bgrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\vind{\phi_j(\dgneigh{G}{B_j})},\bgrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right)\right)\Bigg)\\
+&= \frac{d\mm\vpara{\phi_j(C_j)}\tpara{0}}{d\mmm\vpara{\phi_j(C_j)}\tpara{0}}\exp\Bigg(\sum_{j' = 1}^{\psize}\sum_{v \in \phi_j(C_j)\cap\gneigh{G}{B_{j'}}} \ds\vpara{v}\tpara{t}\left(\Xg\vind{\dgneigh{G}{B_{j'}}\cap\phi_j(C_j)};\xg\vind{\dgneigh{G}{B_{j'}}\cap\phi_j(\dgneigh{G}{B_j})},\brate\gvpara{A}{v}\stpara{\cdot}\right)\\
+&\hspace{24pt} + \sum_{v \in \phi_j(\gneigh{G}{B_j})} \left(\ds\vpara{v}\tpara{t}\left(\Xg\vind{\cl{v}\cap\phi_j(C_j)};\xg\vind{\cl{v}\cap\phi_j(\dgneigh{G}{B_j})},\rate\gvpara{A}{v}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\vind{\phi_j(\dgneigh{G}{B_j})},\bgrate\gvjpara{A}{v}{B_j}\stpara{\cdot}\right)\right)\Bigg)
+\end{align*}
+
+By definition, 
+
+\[\densen\jpara{j}\tpara{t}(\xg\vind{\phi_j(\dgneigh{G}{B_j})}) = \exmu{\mmm\vpara{\phi_j(C_j)}\tpara{t}}{\denseph\jpara{j}\tpara{t}(\Xg\vind{\phi_j(C_j)};\xg\vind{\phi_j(\dgneigh{G}{B_j})})}.\]
+
+Thus,
+
+\[\exmu{\mmm\vpara{\phi_j(C_j)}\tpara{t}}{\mdense\jpara{j}\tpara{t}(\Xg\vind{\phi_j(C_j)};\xg\vind{\phi_j(\dgneigh{G}{B_j})})} = \frac{\densen\jpara{j}\tpara{t}(\xg\vind{\phi_j(\dgneigh{G}{B_j})})}{\densen\jpara{j}\tpara{t}(\xg\vind{\phi_j(\dgneigh{G}{B_j})})} = 1.\]
+
+Thus, \(\mdense\jpara{j}\tpara{t}\) is the density of the distribution of \(\Xg\vind{\phi_j(C_j)}\) conditioned on \(\Xg\vind{\phi_j(\dgneigh{G}{B_j})}\) with respect to \(\mmm\vpara{\phi_j(C_j)}\tpara{t}\).
+
 \end{proof}
 
 \newpage
