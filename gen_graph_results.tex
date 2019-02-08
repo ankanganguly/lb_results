@@ -218,6 +218,8 @@ Remark: In this paper I mostly work with locally finite graphs. However, I prove
 \item Introduce notation for c\`adl\`ag processes. Otherwise things are too awkward.
 
 \item The conditional expectations in lemma \ref{Ex::leftmod} may not be well-defined. Add assumptions to make sure they are. Then make sure I use those assumptions everywhere where I cite lemma \ref{Ex::leftmod}.
+
+\item I don't make it clear that I'm working in the independent initial condition domain.
 \end{itemize}
 
 
@@ -766,7 +768,8 @@ We now have to describe how to extend the graph \(G\vind{A}\).
 \begin{defn}
 As in assumption \ref{a::admissible}, let \(A\indx{1} = A\cup\left(\bigcup_{i=1}^\Sm C_i\right)\). By assumption \ref{a::admissible}, we can find branches of \(A\indx{1}\), \(\{B_i\indx{1}\}_{i=1}^{\Sm\indx{1}}\). Let \(C_i\indx{1} = B_i\indx{1}\cap\gneigh{G}{A\indx{1}}\). Finally, for all \(i = 1,\dots,\Sm\indx{1}\), let \(\phi_i\indx{1}\) be a symmetry of \(\Xf\) mapping \(C_i\indx{1}\cup \dgneigh{G}{B\indx{1}_i}\) to a subset of \(A\). We can assume without loss of generality that \(\phi_i\indx{1}(C_i\indx{1}\cup \dgneigh{G}{B\indx{1}_i}) = \phi_{j\indx{1}_i}(C_{j\indx{1}_i}\cup\dgneigh{G}{B_{j\indx{1}_i}})\) for some \(j\indx{1}_i \in \{1,\dots,\Sm\}\).
 
-\ind In general, let \(A\indx{k+1} = A\indx{k} \cup \left(\bigcup_{i=1}^{\Sm\indx{k}} C_i\indx{k}\right)\). Again, by assumption \ref{a::admissible}, there exist branches of \(A\indx{k+1}\), \(\{B_i\indx{k+1}\}_{i=1}^{\Sm\indx{k+1}}\). Let \(C_i\indx{k+1} = B_i\indx{k+1}\cap \gneigh{G}{A\indx{k+1}}\). Finally, for all \(i=1,\dots,\Sm\indx{k+1}\), \(\phi_i\indx{k+1}\) is the symmetry of \(\Xf\) mapping \(C_i\indx{k+1}\cup\dgneigh{G}{B_i\indx{k+1}}\) to \(\phi_{j\indx{k+1}_i}(C_{j\indx{k+1}_i}\cup\dneigh{G}{B_{j\indx{k+1}_i}})\) for some \(j\indx{k+1}_i \in \{1,\dots,\Sm\}\).
+\ind In general, let \(A\indx{k} = A\indx{k-1} \cup \left(\bigcup_{i=1}^{\Sm\indx{k}} C_i\indx{k-1}\right)\). Again, by assumption \ref{a::admissible}, there exist branches of \(A\indx{k}\), \(\{B_i\indx{k}\}_{i=1}^{\Sm\indx{k}}\). Let \(C_i\indx{k} = B_i\indx{k}\cap \gneigh{G}{A\indx{k}}\). Finally, for all \(i=1,\dots,\Sm\indx{k}\), \(\phi_i\indx{k}\) is the symmetry of \(\Xf\) mapping \(C_i\indx{k}\cup\dgneigh{G}{B_i\indx{k}}\) to \(\phi_{j\indx{k}_i}(C_{j\indx{k}_i}\cup\dneigh{G}{B_{j\indx{k}_i}})\) for some \(j\indx{k}_i \in \{1,\dots,\Sm\}\).
+\label{Uq::Extnot}
 \end{defn}
 
 And now we begin the core argument. Here we construct a sequence of processes on a sequence of increasing spaces whose marginal distributions are consistent with each other and \(\mm\).
@@ -785,7 +788,7 @@ Fix \(k \in \mb{N}\). Let \(\mm\indx{k} = \law(\Xg\indx{k})\) where \(\Xg\indx{k
 
 Here \(\brate\) is defined by,
 
-\[\brate\gvpara{A\indx{k}}{v}\stpara{i}(t) \defeq \exmu{\Xh\sim \mm}{\rate\gvpara{A}{\phi_j\indx{k}(v)}\stpara{i}(\Xh\vind{\cl{\phi_j\indx{k}(v)}}\tmi{[0,t)}\middle|\Xh\vind{\phi_j\left(\dgneigh{G}{B\indx{k}_j}\right)}\tmi{[0,t)} = \Xg\indx{k}\vind{\dgneigh{G}{B\indx{k}_j}}\tmi{[0,t)}} \te{ for } A\indx{k}\te{ admissible, and } v \in \gneigh{G}{B\indx{k}_j}.\]
+\[\brate\gvpara{A\indx{k}}{v}\stpara{i}(t) \defeq \exmu{\Xh\sim \mm}{\rate\gvpara{A}{\phi_j\indx{k}(v)}\stpara{i}(\Xh\vind{\cl{\phi_j\indx{k}(v)}}\tmi{[0,t)})\middle|\Xh\vind{\phi_j\indx{k}\left(\dgneigh{G}{B\indx{k}_j}\right)}\tmi{[0,t)} = \Xg\indx{k}\vind{\dgneigh{G}{B\indx{k}_j}}\tmi{[0,t)}} \te{ for } A\indx{k}\te{ admissible, and } v \in \gneigh{G}{B\indx{k}_j}.\]
 
 Then for any \(k' \leq k\), \(\proj\psf\vpara{A\indx{k'}}(\mm\indx{k}) = \mm\indx{k'}\) and \(\proj\psf\vpara{A}(\mm\indx{k}) = \mm\).
 \label{Uq::ext}
@@ -862,9 +865,92 @@ Thus,
 
 \[\exmu{\mmm\vpara{\phi_j(C_j)}\tpara{t}}{\mdense\jpara{j}\tpara{t}(\Xg\vind{\phi_j(C_j)};\xg\vind{\phi_j(\dgneigh{G}{B_j})})} = \frac{\densen\jpara{j}\tpara{t}(\xg\vind{\phi_j(\dgneigh{G}{B_j})})}{\densen\jpara{j}\tpara{t}(\xg\vind{\phi_j(\dgneigh{G}{B_j})})} = 1.\]
 
-Thus, \(\mdense\jpara{j}\tpara{t}\) is the density of the distribution of \(\Xg\vind{\phi_j(C_j)}\) conditioned on \(\Xg\vind{\phi_j(\dgneigh{G}{B_j})}\) with respect to \(\mmm\vpara{\phi_j(C_j)}\tpara{t}\).
+Thus, \(\mdense\jpara{j}\tpara{t}\) is the density of the distribution of \(\Xg\vind{\phi_j(C_j)}\) conditioned on \(\Xg\vind{\phi_j(\dgneigh{G}{B_j})}\) with respect to \(\mmm\vpara{\phi_j(C_j)}\tpara{t}\). This can be used to extend \(\mm\) to larger domains. To do this, consider the following functions \(\dense\indx{k}\tpara{t}: \cad([0,t),\sta^{A\indx{k}}) \ra [0,\infty)\):
 
+\[\dense\indx{0}\tpara{t}(\xg\indx{0}) = \dense\tpara{t}(\xg\indx{0}).\]
+
+\[\dense\indx{k+1}\tpara{t}(\xg\indx{k+1}) = \dense\indx{k}\tpara{t}(\xg\indx{k+1}\vind{A\indx{k}})\prod_{j=1}^{\psize\indx{k}}\mdense\jpara{j\indx{k}_j}\tpara{t}\left(\xg\indx{k+1}\vind{C_j\indx{k}};\xg\indx{k+1}\vind{\dgneigh{G}{B\indx{k}_j}}\right).\]
+
+Let \(\mmm\indx{k} \defeq \mmm\vpara{A\indx{k}}\) for all \(k\in \mb{N}\). I claim that,
+
+\[\dense\indx{k}\tpara{t}(\xg\indx{k}) = \frac{d\mm\indx{k}\tpara{0}}{d\mmm\indx{k}\tpara{0}}\exp\left(\sum_{j=1}^{\psize\indx{k}}\sum_{v\in \dgneigh{G}{B_j\indx{k}}} \ds\vpara{v}\tpara{t}\left(\xg\indx{k}\vind{\dgneigh{G}{B_j}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right) + \sum_{v \in A\indx{k-1}} \ds\vpara{v}\tpara{t}\left(\xg\indx{k}\vind{\cl{v}},\rate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\right),\]
+
+where \(\brate\) is defined as in the statement of lemma \ref{Uq::ext}. To prove this, we first need to understand some properties of \(\mdense\). Fix some \(j \in \{1,\dots,\psize\indx{k}\}\). Let \(j' = j\indx{k}_j\) (as defined in definition \ref{Uq::Extnot}). Let \(\phi = \phi\indx{k}_j\). Applying substitution,
+
+\begin{align*}
+\mdense\jpara{j'}\tpara{t}\left(\xg\indx{k+1}\vind{C_j\indx{k}};\xg\indx{k+1}\vind{\dgneigh{G}{B\indx{k}_j}}\right) &= \frac{d\mm\vpara{\phi_{j'}(C_{j'})}\tpara{0}}{d\mmm\vpara{\phi_{j'}(C_{j'})}\tpara{0}}(\xg\indx{k+1}\vind{C\indx{k}_j})\exp\Bigg(\sum_{j'' = 1}^{\psize}\sum_{v \in C_j\indx{k}\cap\phi^{-1}(\gneigh{G}{B_{j''}})} \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{C_j\indx{k}\cap\phi^{-1}(\dgneigh{G}{B_{j''}})};\xg\indx{k+1}\vind{\dgneigh{G}{B_j\indx{k}}\cap\phi^{-1}(\dgneigh{G}{B_{j''}})},\brate\gvpara{A\indx{k+1}}{v}\stpara{\cdot}\right)\\
+&\hspace{24pt} + \sum_{v \in \gneigh{G}{B_j\indx{k}}} \left(\ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\cl{v}\cap C_j\indx{k}};\xg\indx{k+1}\vind{\cl{v}\cap\dgneigh{G}{B_j\indx{k}}},\rate\gvpara{A\indx{k+1}}{v}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_j\indx{k}}},\bgrate\gvjpara{A\indx{k}}{v}{B_{j'}}\stpara{\cdot}\right)\right)\Bigg)\\
+&= \frac{d\mm\vpara{C_j\indx{k}}}{d\mmm\vpara{C_j\indx{k}}}\exp\Bigg(\sum_{j'' =1}^{\psize}\sum_{v \in C_j\indx{k}\cap\phi^{-1}(\gneigh{G}{B_{j''}})} \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\left(C_j\indx{k}\cup\dgneigh{G}{B_j\indx{k}}\right)\cap\phi^{-1}(\dgneigh{G}{B_{j''}})},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\\
+&\hspace{24pt} + \sum_{v \in \gneigh{G}{B_j\indx{k}}}\left(\ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\cl{v}},\rate\gvpara{A\indx{k+1}}{v}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_j\indx{k}}},\bgrate\gvjpara{A\indx{k}}{v}{B_{j'}}\right)\right)\Bigg)
+\end{align*}
+
+To further understand this, we need to have a better understanding of the original terms in the expression above. Fix \(v \in C_j\indx{k}\cap \phi^{-1}(\gneigh{G}{B_{j''}})\). Notice that by assumption \ref{a::admissible},
+
+\[C_j\indx{k}\cap \phi^{-1}(\dgneigh{G}{B_{j''}}) = \phi^{-1}\left(\phi_{j'}\left(C_{j'}\cup\dgneigh{G}{B_{j'}}\right)\cap \dgneigh{G}{B_{j''}}\right) = \phi^{-1}\left(\dgneigh{G}{B_{j''}}\right).\]
+
+\tr{I'm assuming for now that \(\phi^{-1}(\dgneigh{G}{B_{j''}}) = \dgneigh{G}{B_{j(v)}\indx{k+1}}\) for \(j(v)\) chosen so that \(v \in \dgneigh{G}{B_{j(v)}\indx{k+1}}\). Double check this later.}
+
+
+Then, 
+
+\begin{align*}
+\brate\gvpara{A\indx{k}}{v}\stpara{i}\left(\xg\vind{\left(C_j\indx{k}\cup\dgneigh{G}{B_j\indx{k}}\right)\cap\phi^{-1}(\dgneigh{G}{B_{j''}})}\tmi{[0,t)}\right) &= \brate\gvpara{A\indx{k}}{v}\stpara{i}\left(\xg\vind{\dgneigh{G}{B_{j(v)}\indx{k+1}}}\tmi{[0,t)}\right)
+\end{align*}
+
+The second term is fine. Suppose \(v \in \dgneigh{G}{B_j\indx{k}}\).
+
+\begin{align*}
+\bgrate\gvjpara{A\indx{k}}{v}{B_{j'}}\stpara{i}\left(\xg\vind{\dgneigh{G}{B_j\indx{k}}}\tmi{[0,t)}\right) &= \exmu{\Xg\sim\mm}{\rate\gvpara{A}{\phi(v)}\stpara{i}(\Xg\vind{\cl{\phi(v)}}\tmi{[0,t)}\middle|\Xg\vind{\phi_{j'}(\dgneigh{G}{B_{j'}})}\tmi{[0,t)} = \xg\vind{\dgneigh{G}{B_j\indx{k}}}\tmi{[0,t)}}\\
+&= \exmu{\Xg\sim\mm}{\rate\gvpara{A}{\phi(v)}\stpara{i}(\Xg\vind{\cl{\phi(v)}}\tmi{[0,t)}\middle|\Xg\vind{\phi(\dgneigh{G}{B_j\indx{k}})}\tmi{[0,t)} = \xg\vind{\dgneigh{G}{B_j\indx{k}}}\tmi{[0,t)}}\\
+&= \brate\gvpara{A\indx{k}}{v}\stpara{i}\left(\xg\vind{\dgneigh{G}{B_j\indx{k}}}\tmi{[0,t)}\right)
+\end{align*}
+
+Thus,
+
+\begin{align*}
+\mdense\jpara{j'}\tpara{t}\left(\xg\indx{k+1}\vind{C_j\indx{k}};\xg\indx{k+1}\vind{\dgneigh{G}{B\indx{k}_j}}\right)&=  \frac{d\mm\vpara{C_j\indx{k}}}{d\mmm\vpara{C_j\indx{k}}}\exp\Bigg(\sum_{j'' =1}^{\psize}\sum_{v \in C_j\indx{k}\cap\phi^{-1}(\gneigh{G}{B_{j''}})} \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\left(C_j\indx{k}\cup\dgneigh{G}{B_j\indx{k}}\right)\cap\phi^{-1}(\dgneigh{G}{B_{j''}})},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\\
+&\hspace{24pt} + \sum_{v \in \gneigh{G}{B_j\indx{k}}}\left(\ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\cl{v}},\rate\gvpara{A\indx{k+1}}{v}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_j\indx{k}}},\bgrate\gvjpara{A\indx{k}}{v}{B_{j'}}\stpara{\cdot}\right)\right)\Bigg)\\
+&=\frac{d\mm\vpara{C_j\indx{k}}}{d\mmm\vpara{C_j\indx{k}}}\exp\Bigg(\sum_{j'' =1}^{\psize}\sum_{v \in C_j\indx{k}\cap\phi^{-1}(\gneigh{G}{B_{j''}})}\ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_{j(v)}\indx{k+1}}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\\
+&\hspace{24pt} + \sum_{v \in \gneigh{G}{B_j\indx{k}}}\left(\ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\cl{v}},\rate\gvpara{A\indx{k+1}}{v}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_j\indx{k}}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\right)\Bigg)\\
+&=\frac{d\mm\vpara{C_j\indx{k}}}{d\mmm\vpara{C_j\indx{k}}}\exp\Bigg(\sum_{j'''=1}^{\psize\indx{k+1}}\sum_{v \in C_j\indx{k}\cap\gneigh{G}{B_{j'''}\indx{k+1}}}\ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_{j'''}\indx{k+1}}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\\
+&\hspace{24pt} + \sum_{v \in \gneigh{G}{B_j\indx{k}}}\left(\ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\cl{v}},\rate\gvpara{A\indx{k+1}}{v}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_j\indx{k}}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\right)\Bigg)
+\end{align*}
+
+\tr{I assumed that \(C_j\indx{k}\cap\phi^{-1}(\gneigh{G}{B_{j''}}) = \gneigh{G}{B_{j'''}\indx{k+1}}\) for some \(j'''\). }Now we are ready to evaluate \(\dense\indx{k}\). First, notice that the inductive hypothesis holds for \(k=0\). Suppose it also holds for \(k\). Then,
+
+\begin{align*}
+\dense\indx{k+1}\tpara{t}(\xg\indx{k+1}) &= \dense\indx{k}\tpara{t}(\xg\indx{k+1}\vind{A\indx{k}})\prod_{j=1}^{\psize\indx{k}}\mdense\jpara{j\indx{k}_j}\tpara{t}\left(\xg\indx{k+1}\vind{C_j\indx{k}};\xg\indx{k+1}\vind{\dgneigh{G}{B\indx{k}_j}}\right)\\
+&= \frac{d\mm\indx{k}\tpara{0}}{d\mmm\indx{k}\tpara{0}}\left(\prod_{j=1}^{\psize\indx{k}}\frac{d\mm\vind{C_j\indx{k}}}{d\mmm\vind{C_j\indx{k}}}\right)\exp\Bigg(\sum_{j=1}^{\psize\indx{k}}\sum_{v\in \dgneigh{G}{B_j\indx{k}}} \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_j}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right) + \sum_{v \in A\indx{k-1}} \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\cl{v}},\rate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\\
+&\hspace{24 pt} + \sum_{j=1}^{\psize\indx{k}}\sum_{j'''=1}^{\psize\indx{k+1}}\sum_{v \in C_j\indx{k}\cap\gneigh{G}{B_{j'''}\indx{k+1}}}\ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_{j'''}\indx{k+1}}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\\
+&\hspace{24pt} + \sum_{j=1}^{\psize\indx{k}}\sum_{v \in \gneigh{G}{B_j\indx{k}}}\left(\ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\cl{v}},\rate\gvpara{A\indx{k+1}}{v}\stpara{\cdot}\right) - \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_j\indx{k}}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\right)\Bigg)\\
+&= \frac{d\mm\indx{k+1}\tpara{0}}{d\mmm\indx{k+1}\tpara{0}}\exp\left(\sum_{j=1}^{\psize\indx{k+1}}\sum_{v\in \dgneigh{G}{B_j\indx{k+1}}} \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{\dgneigh{G}{B_j}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right) + \sum_{v \in A\indx{k}}\ds\vpara{v}\tpara{t}\left(\xg\vind{\cl{v}}\indx{k+1},\rate\gvpara{A\indx{k+1}}{v}\stpara{\cdot}\right)\right)
+\end{align*}
+
+Notice that, by \tr{lemma B.11 main paper?}, \(\dense\indx{k} = \frac{d\mm\indx{k}\tpara{t}}{d\mmm\indx{k}\tpara{t}}\), where \(\mm\indx{k}\) is the law of the unique strong solution to equation \eqref{Uq::exteqn} \tr{(I think there exists a unique solution by lemma B.8 of the main paper)}. Fix some \(k \geq 1\). Then,
+
+\tr{Define \(\Omega\vpara{U}\tpara{t} = \cad([0,t),\sta^U)\) and \(\Omega\vpara{U} = \cad([0,\infty),\sta^U)\) back in the notation section.}
+
+\begin{align*}
+\frac{d\proj\tparapsf{t}\indx{k-1}(\mm\indx{k})}{d\mmm\indx{k-1}\tpara{t}} &= \int_{\Omega\vpara{A\indx{k}\setminus A\indx{k-1}}\tpara{t}} \frac{d\mm\indx{k}\tpara{t}}{d\mmm\indx{k}\tpara{t}}\mmm\vpara{A\indx{k}\setminus A\indx{k-1}}\tpara{t}(d\Xg\indx{k}\vind{A\indx{k}\setminus A\indx{k-1}})\\
+&=\int_{\Omega\vpara{A\indx{k}\setminus A\indx{k-1}}\tpara{t}} \dense\indx{k}(\Xg\indx{k}\vind{A\indx{k}})\mmm\vpara{A\indx{k}\setminus A\indx{k-1}}\tpara{t}(d\Xg\indx{k}\vind{A\indx{k}\setminus A\indx{k-1}})\\
+&=\int_{\Omega\vpara{A\indx{k}\setminus A\indx{k-1}}\tpara{t}} \dense\indx{k-1}(\Xg\indx{k}\vind{A\indx{k-1}})\prod_{j=1}^{\psize\indx{k-1}}\mdense\jpara{j_j\indx{k-1}}\tpara{t}\left(\Xg\indx{k}\vind{C_j\indx{k-1}};\Xg\indx{k}\vind{\dgneigh{G}{B_j\indx{k-1}}}\right)\mmm\vpara{A\indx{k}\setminus A\indx{k-1}}\tpara{t}(d\Xg\indx{k}\vind{A\indx{k}\setminus A\indx{k-1}})\\
+&=\dense\indx{k-1}(\Xg\indx{k}\vind{A\indx{k-1}})\prod_{j=1}^{\psize\indx{k-1}} \int_{\Omega\vpara{C_j\indx{k-1}}\tpara{t}}\mdense\jpara{j_j\indx{k-1}}\tpara{t}\left(\Xg\indx{k}\vind{C_j\indx{k-1}};\Xg\indx{k}\vind{\dgneigh{G}{B_j\indx{k-1}}}\right)\mmm\vpara{C_j\indx{k-1}}\tpara{t}(d\Xg\indx{k}\vind{C_j\indx{k-1}})\\
+&=\dense\indx{k-1}(\Xg\indx{k}\vind{A\indx{k-1}})\prod_{j=1}^{\psize\indx{k-1}} \exmu{\mmm\vpara{C_j\indx{k-1}}\tpara{t}}{\mdense\jpara{j_j\indx{k-1}}\tpara{t}\left(\Xg\indx{k}\vind{C_j\indx{k-1}};\Xg\indx{k}\vind{\dgneigh{G}{B_j\indx{k-1}}}\right)}\\
+&=\dense\indx{k-1}(\Xg\indx{k}\vind{A\indx{k-1}})
+\end{align*}
+
+This proves that \(\proj\tparapsf{t}\vpara{A\indx{k-1}}(\mm\indx{k}\tpara{t}) = \mm\indx{k-1}\tpara{t}\). For any \(k' < k\),
+
+\begin{align*}
+\proj\tparapsf{t}\vpara{A\indx{k'}}(\mm\indx{k}\tpara{t}) &= \proj\tparapsf{t}\vpara{A\indx{k'}}\circ\cdots\circ\proj\tparapsf{t}\vpara{A\indx{k-1}}(\mm\indx{k}\tpara{t})\\
+&=\proj\tparapsf{t}\vpara{A\indx{k'}}\circ\cdots\circ\proj\tparapsf{t}\vpara{A\indx{k-2}}(\mm\indx{k-1}\tpara{t})\\
+&= \mm\indx{k'}\tpara{t}
+\end{align*}
+
+That concludes the proof.
 \end{proof}
+
+\tr{The remainder of the proof should be exactly the same as the regular tree case.}
 
 \newpage
 \bibliographystyle{plain}
