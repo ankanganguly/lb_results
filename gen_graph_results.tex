@@ -101,7 +101,7 @@
 
 %Assumptions
 \newcommand{\psize}{\ell}							%Branching size
-
+\newcommand{\xf}{x}									%x input
 
 %Well-Posedness
 %Base Commands
@@ -205,21 +205,23 @@ Remark: In this paper I mostly work with locally finite graphs. However, I prove
 \begin{itemize}
 \item Split assumption \ref{a::admissible} into 2 assumptions. One on the nature of the underlying graph \(G\), and the other on the process \(\Xf\gind{G}\). Adjust references to assumptions accordingly.
 
-\item Modify assumption \ref{a::pbasics} to include regularity of \(\rate\gvpara{G}{v}\stpara{i}\) with respect to time. Ideally, it should be left-continuous.
+\item Modify assumption \ref{a::pbasics} to include regularity of \(\rate\gvpara{G}{v}\stpara{i}\) with respect to time. Ideally, it should be left-continuous. \tr{Tentatively done.}
 
 \item Revise assumption \ref{Ex::Eassu} and lemma \ref{Ex::leftmod} after proof of uniqueness is complete.
 
-\item Make sure modifications made to \(\gneigh{G}{v}\) and \(dgneigh{G}{v}\) are properly placed in the paper.
+\item Make sure modifications made to \(\gneigh{G}{v}\) and \(\dgneigh{G}{v}\) are properly placed in the paper.
 
 \item Bad notation! I use \(i\) to indicate elements of \(\sta\) and to enumerate branches of \(A\).
 
 \item I often state that certain finite-dimensional SDEs have a unique strong solution and then leave it at that. Reference the relevant lemma in the main paper.
 
-\item Introduce notation for c\`adl\`ag processes. Otherwise things are too awkward.
+\item Introduce notation for c\`adl\`ag processes. Otherwise things are too awkward. \tr{Done. Now implement it throughout.}
 
 \item The conditional expectations in lemma \ref{Ex::leftmod} may not be well-defined. Add assumptions to make sure they are. Then make sure I use those assumptions everywhere where I cite lemma \ref{Ex::leftmod}.
 
-\item I don't make it clear that I'm working in the independent initial condition domain.
+\item Let \(U,U'\subseteq V\) such that \(|U| = |U'|\). I'll often say things like \(\Xf\vind{U} = \Xf\vind{U'}\). This makes sense if there is an implied bijection \(\phi:U \ra U'\). Make sure that the implied bijection is clear wherever I make such statements.
+
+\item In the main paper, everything is done on a finite time horizon. However, that is completely unnecessary. Make sure all of my extensions to the infinite time horizon are valid.
 \end{itemize}
 
 
@@ -236,7 +238,7 @@ We consider an interacting particle system for which each node takes values in t
 \subsection{Process Notation}
 \label{p::not}
 
-In this context, define the \(\sta^V\)-valued c\`adl\`ag process \(\Xf\). For any \(v \in V\) and \(t < \infty\), let \(\Xf\vind{v}\tme{t}\) be the value the \(v\)-component of \(\Xf\) at time \(t\). Given a set \(A\subset V\) and an interval \(I \subset \mb{R}^+\), let \(\Xf\vind{A}\tmi{I}\) denote the path taken by the \(A\)-components of \(\Xf\) over \(\tmi{I}\). We denote the natural filtration of this process by \(\F\vpara{A}\tpara{t} \defeq \sigma \left(\Xf\vind{v}\tmi{[0,t]}\right)\). We will often be interested in the predictable sigma-algebra of the process given by \(\F\vpara{A}\tpara{t-} \defeq \bigvee_{s < t} \F\vpara{A}\tpara{s} = \sigma\left(\Xf\vind{v}\tmi{[0,t)}\right)\). Furthermore, when the evolution of \(\Xf\) with respect to its topology is clearly defined, but the specific interaction network of \(\Xf\) is not clear from context, we may write \(\Xf\gind{G}\) to represent the process \(\Xf\) with interaction network \(G\). Fix any \(v \in V,t \in \mb{R}^+\) and \(j \in \sta\setminus\{\Xf\vind{v}\tme{t}\}\). Then at time \(t\), we can define the jump rate \(\rate\gvpara{G}{v}\stpara{j}(G,t)\) to be the inverse of the expected time for \(\Xf\vind{v}\) to jump to \(\Xf\vind{v} + j\) time \(t\). It now becomes clear how we can define the interaction network. The interaction network is any graph \(G\) such that \(\Xf\) is a \(\sta^V\)-valued process and such that for every \(v \in V\),\(t\in \mb{R}^+\) and \(j \in \sta\), \(\rate\gvpara{G}{v}\stpara{j}(G,t)\) is \(\F\vpara{v}\tpara{t-}\)-measurable. 
+For any \(U \subseteq V\), let \(\Omega\vpara{U} = \cad\left([0,\infty),\sta^U\right)\) be the set of \(\sta^U\)-valued c\`adl\`ag processes up to infinite time. Let \(\Omega\vpara{U}\tpara{t} = \cad\left([0,t),\sta^U\right)\). In this context, define \(\Xf \in \Omega\vpara{V}\). For any \(v \in V\) and \(t < \infty\), let \(\Xf\vind{v}\tme{t}\) be the value the \(v\)-component of \(\Xf\) at time \(t\). Given a set \(U\subset V\) and an interval \(I \subset \mb{R}^+\), let \(\Xf\vind{U}\tmi{I}\) denote the path taken by the \(U\)-components of \(\Xf\) over \(\tmi{I}\). We denote the natural filtration of this process by \(\F\vpara{U}\tpara{t} \defeq \sigma \left(\Xf\vind{v}\tmi{[0,t]}\right)\). We will often be interested in the predictable sigma-algebra of the process given by \(\F\vpara{U}\tpara{t-} \defeq \bigvee_{s < t} \F\vpara{U}\tpara{s} = \sigma\left(\Xf\vind{v}\tmi{[0,t)}\right)\). Furthermore, when the evolution of \(\Xf\) with respect to its topology is clearly defined, but the specific interaction network of \(\Xf\) is not clear from context, we may write \(\Xf\gind{G}\) to represent the process \(\Xf\) with interaction network \(G\). Fix any \(v \in V,t \in \mb{R}^+\) and \(j \in \sta\setminus\{\Xf\vind{v}\tme{t}\}\). Then at time \(t\), we can define the jump rate \(\rate\gvpara{G}{v}\stpara{j}(G,t)\) to be the inverse of the expected time for \(\Xf\vind{v}\) to jump to \(\Xf\vind{v} + j\). It now becomes clear how we can define the interaction network. The interaction network is any graph \(G\) such that \(\Xf\) is a \(\sta^V\)-valued process and such that for every \(v \in V\),\(t\in \mb{R}^+\) and \(j \in \sta\), \(\rate\gvpara{G}{v}\stpara{j}(G,t)\) is \(\F\vpara{v}\tpara{t-}\)-measurable. 
 
 \ind We can rigorously define this in the following manner. Let \(\Sm\) be the counting measure on \(\sta\). Let \(\leb\) be the Lebesgue measure on \(\mb{R}^2\). Let \(\{\poiss\poissv{v}:v \in V\}\) be a sequence of i.i.d. Poisson point processes on \(\sta\times \mb{R}^2\) with intensity \(\Sm\times \leb\). Let \(\Xf\tme{0}\) be an \(\sta^V\)-valued random variable. Let \(\Xf\tme{0}\) be some given \(\sta^V\)-valued random variable. Assume \(\rate\gvpara{G}{v}\stpara{j}(t)\) is \(\F\vpara{\cl{v}}\tpara{t-}\)-measurable for all \(v,j,t\) and that \(\rate\gvpara{G}{v}\stpara{j}:\mb{R}^+ \ra\mb{R}^+\) is an almost surely Borel-Measurable function. Consider the following SDE:
 
@@ -247,12 +249,12 @@ In this context, define the \(\sta^V\)-valued c\`adl\`ag process \(\Xf\). For an
 
 Assuming equation \eqref{p::Xf} has a well-defined unique solution, this is the infinite-dimensional process whose marginals we are interested in.
 
-\ind Let \(\m\) be the law of \(\Xf\). We are primarily interested in the marginals of \(\m\). For any \(A \subseteq V\), let \(\proj\vpara{A}(\Xf)\) map \(\Xf\) to an \(\sta^A\)-valued process defined by \((\proj\vpara{A}(\Xf))\vind{v} = \Xf\vind{v}\) for all \(v\in A\). Then the \(A\)-marginal of \(\m\) is given by the push-forward measure \(\proj\vpara{A}\psf(\m)\). I will often use the shorthand \(\m\vpara{A} \defeq \proj\psf\vpara{A}(\m)\). We may also be interested in restricting the process to some finite time interval \([0,T)\). In this case, we define \((\proj\vpara{A}\tpara{T}(\Xf))\vind{v}\tme{t} = \Xf\vind{v}\tme{t}\) for \(v \in A\) and \(t \in [0,T)\). The corresponding push-forward measure is given by \(\proj\vpara{A}\tparapsf{T}(\m)\). Again, I will use the shorthand \(\m\vpara{A}\tpara{T} \defeq \proj\vpara{A}\tparapsf{T}(\m)\). \(\m\tpara{0} = \law(\Xf\tme{0})\).
+\ind Let \(\m\) be the law of \(\Xf\). We are primarily interested in the marginals of \(\m\). For any \(U \subseteq V\), let \(\proj\vpara{U}(\Xf)\) map \(\Xf\) to an \(\sta^U\)-valued process defined by \((\proj\vpara{U}(\Xf))\vind{v} = \Xf\vind{v}\) for all \(v\in U\). Then the \(U\)-marginal of \(\m\) is given by the push-forward measure \(\proj\vpara{U}\psf(\m)\). I will often use the shorthand \(\m\vpara{U} \defeq \proj\psf\vpara{U}(\m)\). We may also be interested in restricting the process to some finite time interval \([0,T)\). In this case, we define \((\proj\vpara{U}\tpara{T}(\Xf))\vind{v}\tme{t} = \Xf\vind{v}\tme{t}\) for \(v \in U\) and \(t \in [0,T)\). The corresponding push-forward measure is given by \(\proj\vpara{U}\tparapsf{T}(\m)\). Again, I will use the shorthand \(\m\vpara{U}\tpara{T} \defeq \proj\vpara{U}\tparapsf{T}(\m)\). \(\m\tpara{0} = \law(\Xf\tme{0})\).
 
 \subsubsection{Considering Simultaneous Jumps}
 \label{sim::p}
 
-The model described above is fairly general. However, it does not account for certain models such as the exclusion process in which multiple nodes of \(\Xf\) may update simultaneous with positive probability. This can be accounted for in the following manner. Let \(\Jmps \subseteq 2^V\) be the set of subsets of nodes of \(\Xf\) that can jump simultaneously with positive probability. We assume \(\Jmps\) is composed of finite sets. 
+The model described above is fairly general. However, it does not account for certain models such as the exclusion process in which multiple nodes of \(\Xf\) may update simultaneously with positive probability. This can be accounted for in the following manner. Let \(\Jmps \subseteq 2^V\) be the set of subsets of nodes of \(\Xf\) that can jump simultaneously with positive probability. We assume \(\Jmps\) is composed of finite sets. 
 
 Let \tr{continue with this later. For now focus on the main argument. The idea here is to construct an interaction graph (kind of like I did for load-balancing earlier) which treats all simultaneous jumps as single nodes. Ideally this graph satisfies the conditions of general networks outlined later in the paper.}
 
@@ -268,7 +270,7 @@ The assumptions required for our results vary from extremely general to fairly r
 
 All graphs considered in this paper will satisfy assumption \ref{a::gbasics}. Countability is required for obvious reasons. We restrict our attention to rooted graphs so that we can clearly describe local properties (this could also be achieved using ordinary graphs and choosing an arbitrary vertex, however working with rooted graphs simplifies matters greatly). We need the graphs to be locally finite so that all finite vertex sets have finite neighborhoods within the graph. \tr{Most of my results currently hold only for bounded degree graphs rather than locally finite. For now I will write up the results as if I have already extended everything, but I need to keep an eye out for this assumption when pulling results from the main paper.}
 
-\ind \tr{Connectedness is not actually necessary for my results. For well-posedness, it suffices to prove that the process is well-defined on all components (reducing to the connected case). Local convergence automatically discounts everything except for the connected component on which the root appears, so we can assume everything is connected without loss of generality. The conditional independence property holds on the whole graph if it holds on each component (by independence of the components). The local approximation would require some tedious graph theoretic arguments, but we can essentially ignore all components that do not contain a vertex from the admissible set. I suspect there's some simple way to consider each separate component of the admissible set separately, but I would have to think about it some more. I include the assumption of connectedness because I don't want to get bogged down in arguments about connected components.}
+\ind \tr{Connectedness is not actually necessary for my results. For well-posedness, it suffices to prove that the process is well-defined on all components (reducing to the connected case). Local convergence automatically discounts everything except for the connected component on which the root appears, so we can assume everything is connected without loss of generality. The conditional independence property only holds if one of the sets considered is finite. Thus, on a disconnected graph, we only need to consider a finite number of components. This would allow us to consider each component separately. Similarly, the admissible set of the local approximation is finite, so once again, we can consider each connected component separately.}
 
 \ind Next, we need some general assumptions under which the process \(\Xf\) is well-defined.
 
@@ -282,15 +284,17 @@ All graphs considered in this paper will satisfy assumption \ref{a::gbasics}. Co
 \label{a::bddstart}
 \end{equation}
 
-\item 
+\item \(\{\Xf\gind{G}\vind{v}:v \in V\}\) is a sequence of independent random variables. \tr{Consider 2nd order Gibbs instead. This should still hold, but some of the density calculations in the proof of uniqueness would become a little more complex.}
+
+\item
 
 \begin{equation}
-\sum_{i \in \sta}|i|\sup_{v \in V,t \in \mb{R}^+} \rate\gvpara{G}{v}\stpara{i}\tme{t} < \infty
+\sum_{i \in \sta}|i|\sup_{v \in V,t \in \mb{R}^+} \rate\gvpara{G}{v}\stpara{i}\tme{t} < \infty \quad \m\te{-a.s.}
 \label{a::bddjmp}
 \end{equation}
 \end{enumerate}
 
-Furthermore, \(\rate\gvpara{G}{v}\stpara{i}\tme{t}\) is \(\F\vpara{\cl{v}}\tpara{t-}\) measurable for all \(v\in V,i \in \sta, t \in \mb{R}^+\), \(\rate\gvpara{G}{v}\stpara{i}\tme{t}: \mb{R}^+ \ra \mb{R}^+\) is almost surely left-continuous, and almost surely continuous at all continuity points of \(\Xf\vpara{\cl{v}}\).
+Furthermore, \(\rate\gvpara{G}{v}\stpara{i}\tme{t}\) is \(\F\vpara{\cl{v}}\tpara{t-}\) measurable for all \(v\in V,i \in \sta, t \in \mb{R}^+\), \(\rate\gvpara{G}{v}\stpara{i}\tme{t}: \mb{R}^+ \ra \mb{R}^+\) is almost surely left-continuous, and almost surely continuous at all continuity points of \(\Xf\vind{\cl{v}}\).
 
 \skipLine
 
@@ -333,8 +337,11 @@ Let \((G,\Xf\gind{G})\) be a process satisfying assumption \ref{a::pbasics}. \(\
 \item 
 
 \begin{equation}
-\rate\gvpara{G}{\phi(v)}\stpara{i}\left(\Xf\gind{G}\vind{\phi(\cl{v})}\tmi{[0,t)}\right) = \rate\gvpara{G}{v}\stpara{i}\left(\Xf\gind{G}\vind{\cl{v}}\tmi{[0,t)}\right) \te{ for all } v \in V,i \in \sta, t \in \mb{R}^+.
+\rate\gvpara{G}{\phi(v)}\stpara{i}\left(\xf\gind{G}\vind{\phi(\cl{v})}\tmi{[0,t)}\right) = \rate\gvpara{G}{v}\stpara{i}\left(\xf\gind{G}\vind{\cl{v}}\tmi{[0,t)}\right) \te{ for all } v \in V,i \in \sta, t \in \mb{R}^+, \xf\in \Omega\vpara{V}\tpara{t}.
+\label{a::ratesym}
 \end{equation}
+
+\item \(\Xf\gind{G}\vind{\phi(V)}\tme{0} \deq \Xf\gind{G}\vind{V}\tme{0}\).
 \end{enumerate}
 \label{a:Xsim}
 \end{defn}
@@ -342,7 +349,7 @@ Let \((G,\Xf\gind{G})\) be a process satisfying assumption \ref{a::pbasics}. \(\
 This is called a symmetry of \(\Xf\) for a simple reason:
 
 \begin{prop}
-Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics}, and suppose \(\phi\) is a symmetry of \(\Xf\gind{G}\). Suppose also that \(\Xf\gind{G}\vind{\phi(V)}\tme{0} \deq \Xf\gind{G}\vind{V}\tme{0}\). Then,
+Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics}, and suppose \(\phi\) is a symmetry of \(\Xf\gind{G}\). Suppose also that \(\Xf\) is the unique strong solution to equation \eqref{p::Xf}. Then,
 
 \[\Xf\gind{G}\vind{V} \deq \Xf\gind{G}\vind{\phi(V)},\]
 
@@ -356,14 +363,14 @@ This proof assumes that assumption \ref{a::pbasics} is enough to ensure that \(\
 Now we can characterize the types of symmetries necessary for the local equations to be asymptotically exact.
 
 \begin{assu}
-Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics}. \(G\) is said to be admissible if there exists a finite set \(A \subset V\) such that,
+Let \(G\) satisfy assumption \ref{a::gbasics}. \(G\) is said to be admissible if there exists a finite set \(A \subset V\) such that,
 
 \begin{itemize}
 \item There exists a finite partition \(\{B_i\}_{i=1}^\psize\) of \(A^c\).
 
 \item \(\dneigh{B_i} \subseteq A\) for all \(i\).
 
-\item Let \(C_i = B_i\cap\neigh{A}\). For each \(i\), there exists a symmetry, \(\phi_i\), such that \(\phi_i(C_i\cup \dneigh{B_i}) \subset A\), and \(\phi_i(B_i\setminus C_i)\cap A = \emptyset\). \tr{The last one may be unnecessary, but it greatly simplifies the casework.}
+\item Let \(C_i = B_i\cap\neigh{A}\). For each \(i\), there exists a self-isomorphism, \(\phi_i\), such that \(\phi_i(C_i\cup \dneigh{B_i}) \subset A\), and \(\phi_i(B_i\setminus C_i)\cap A = \emptyset\). \tr{The last one may be unnecessary, but it greatly simplifies the casework.}
 
 \item If we let \(A\indx{1} = A\cup \left(\bigcup_{i=1}^\psize C_i\right)\). Then \(A\indx{1}\) is also admissible with partition \(\{B\indx{1}_i\}_{i=1}^{\psize\indx{1}}\) and boundary nodes \(C\indx{1}_i = B\indx{1}_i\cap \neigh{A\indx{1}}\).
 
@@ -371,13 +378,18 @@ Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics}. \(G\) is said to be
 
 \item If \(\phi_j(\dgneigh{G}{B_j}\setminus\gneigh{G}{B_j})\cap\gneigh{G}{B_{j'}}\) is nonempty, then \(\phi_j(C_j)\cap\dgneigh{G}{B_{j'}} = \emptyset\). \tr{I suspect this can be proven using the points above. Try to do so or find a simpler set of assumptions that satisfy this.}
 
-\item If \(\phi_j(C_j) \cap \gneigh{G}{B_{j'}}\) is nonempty, then \(\dgneigh{G}{B_{j'}} \subseteq \phi_j(C_j\cup\dgneigh{G}{B_j})\).
+\item If \(\phi_j(C_j) \cap \gneigh{G}{B_{j'}}\) is nonempty, then \(\dgneigh{G}{B_{j'}} \subseteq \phi_j(C_j\cup\dgneigh{G}{B_j})\). In fact, \(\phi_j^{-1}(\dgneigh{G}{B_{j'}}) = \dgneigh{G}{B_{j''}\indx{1}}\) for some \(j''\). Furthermore, \(C_j\cap\phi_j^{-1}(\gneigh{G}{B_{j'}}) = \gneigh{G}{B_{j''}\indx{1}}\).
 \end{itemize}
 
 The set \(A\) is called an admissible set. \(\{B_i\}_{i=1}^\psize\) will be referred to as the set of branches of \(A\). \(\psize\) is the branching number of \(A\). \(\{C_i\}_{i=1}^\psize\) will be called the boundary nodes of \(A\).
 
 \ind \tr{Right now I'm just adding assumptions whenever I need them (after making sure load-balancing satisfies them).}
 \label{a::admissible}
+\end{assu}
+
+\begin{assu}
+Let \((G,\Xf\gind{G})\) satisfy assumption \ref{a::pbasics} and let \(G\) satisfy assumption \ref{a::admissible}. Then all self-isomorphisms of assumption \ref{a::admissible} are symmetries of \((G,\Xf\gind{G})\).
+\label{a::padmin}
 \end{assu}
 
 The definition of an admissible set is designed ensure a high enough level of symmetry for the arguments in the main paper to hold in this case as well. \tr{Interestingly enough, if this assumption suffices to prove the local approximation, then we will be able to understand the dynamics of a typical class of particles even when such particles are split into heterogeneous classes so long as they are distributed with a high level of symmetry. This will be especially useful if we consider random graphs later.}
@@ -457,14 +469,14 @@ Suppose \((G,\Xf\gind{G})\) satisfy assumptions \ref{a::gbasics} and \ref{a::pba
 \label{CI::CI}
 \end{thms}
 \begin{proof}
-I've proved version of this theorem in the main paper with stronger assumptions (Theorem 3.1) (\(\Xf\gind{G}\) is assumed to be Feller, \(G\) is assumed to be of bounded degree instead of locally-finite and \(\sta\) is assumed to be finite instead of countable). However, I suspect that proving this will only require some modifications to Lemma 4.3 from the main paper.
+I've proved a version of this theorem in the main paper with stronger assumptions (Theorem 3.1) (\(\Xf\gind{G}\) is assumed to be Feller, \(G\) is assumed to be of bounded degree instead of locally-finite and \(\sta\) is assumed to be finite instead of countable). However, I suspect that proving this will only require some modifications to Lemma 4.3 from the main paper.
 \end{proof}
 \section{Statement of the Local Approximation}
 \label{Main}
 
 
 \begin{thms}
-Let \((G,\Xf)\) satisfy assumption \ref{a::admissible}. Let \(A\) be the admissible set and \(\{B_i\}\) the branches of \(A\). Let \(\inte{A} = \{v \in A: \neigh{v} \subseteq A\}\). Consider the following equations:
+Let \((G,\Xf)\) satisfy assumptions \ref{a::admissible} and \ref{a::padmin}. Let \(A\) be the admissible set and \(\{B_i\}\) the branches of \(A\). Let \(\inte{A} = \{v \in A: \neigh{v} \subseteq A\}\). Consider the following equations:
 
 \begin{align}
 \Xg\vind{v}\tme{t} &= 
@@ -472,22 +484,22 @@ Let \((G,\Xf)\) satisfy assumption \ref{a::admissible}. Let \(A\) be the admissi
 \Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \rate\gvpara{A}{v}\stpara{i}(\Xg\vind{\cl{v}}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) & \te{ if } v \in \inte{A}\\
 \Xg\vind{v}\tme{0} + \int_{\sta} \int_{[0,t)\times (0,\infty)} i\mb{I}_{r\leq \brate\gvpara{A}{v}\stpara{i}(\Xg\vind{\dneigh{B_j}}\tmi{[0,s)})}\,\poiss\poissv{v}(dr,ds,di) &\te{ if } v \in \neigh{B_j}
 \end{cases}\label{Main::local}\\
-\brate\gvpara{A}{v}\stpara{i}(x_{\dneigh{B_j}}[0,t)) &= \exmu{\Xg \sim \mu}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{A}\tmi{[0,t)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,t)} = x\vind{\dneigh{B_j}}\tmi{[0,t)}} \te{ if } v \in \neigh{B_j}\label{Main::CI}\\
+\brate\gvpara{A}{v}\stpara{i}(x_{\dneigh{B_j}}[0,t)) &= \exmu{\Xg \sim \mu}{\rate\gvpara{A}{\phi_j(v)}\stpara{i}\left(\Xg\vind{\cl{\phi_j(v)}}\tmi{[0,t)}\right)\middle|\Xg\vind{\phi_j(\dneigh{B_j})}\tmi{[0,t)} = x\vind{\dneigh{B_j}}\tmi{[0,t)}} \te{ if } v \in \neigh{B_j}\label{Main::CI}\\
 \mu &= \law(\Xg).\label{Main::fixed}
 \end{align}
 
-Equations \eqref{Main::local}, \eqref{Main::CI} and \eqref{Main::fixed} have a unique weak solution in law satisfying the results of theorem \ref{CI::CI}, \(\mu = \law(\Xf\vind{A})\). (We don't yet have a general proof of uniqueness, just that only one of the solutions satisfies the conditional independence property outlined in section \ref{CI}).
+Equations \eqref{Main::local}, \eqref{Main::CI} and \eqref{Main::fixed} have a unique weak solution in law satisfying the results of theorem \ref{CI::CI}, and \(\mu = \law(\Xf\vind{A})\). (We don't yet have a general proof of uniqueness, just that only one of the solutions satisfies the conditional independence property outlined in section \ref{CI}).
 \label{Main::Main}
 \end{thms}
 
-\subsection{Proof of Existence}
-\label{Ex::Main}
+\section{Proof of Existence}
+\label{Ex}
 
 In this section, we prove that \(\law(\Xf\vind{A})\) is a weak solution to equations \eqref{Main::local}-\eqref{Main::fixed} in Theorem \ref{Main::Main}.
 
-Just like in the regular tree case, the idea of the proof is to convert \(\Xf\) into a point process and use a well-known filtration result for point processes.
+\ind Just like in the regular tree case, the idea of the proof is to convert \(\Xf\) into a point process and use a well-known filtration result for point processes.
 
-\ind In this section, we assume \((G,\Xf)\) satisfy assumption \ref{a::admissible}. Recall that \(\proj\vpara{\cdot}\tpara{\cdot}(\cdot)\) is the projection mapping (see section \ref{p::not}).
+\ind In this section, we assume \((G,\Xf)\) satisfy assumptions \ref{a::admissible} and \ref{a::padmin}. Recall that \(\proj\vpara{\cdot}\tpara{\cdot}(\cdot)\) is the projection mapping (see section \ref{p::not}). All graph operations (unless otherwise stated) are assumed to be in terms of \(G\). So if \(v \in A\setminus\inte{A}\), then \(\neigh{v}\) contains elements outside of \(A\).
 
 \begin{defn}
 Let \(U\subseteq V\) and suppose \(\Xg\) is a \(\sta^U\)-valued c\`adl\`ag stochastic process adapted to its own natural filtration. Define the marked point process \(\pmap(\Xg)\) as a random measure on \((0,\infty) \times \sta^U\) defined by,
@@ -512,6 +524,8 @@ Finally, for any \(T\in (0,\infty)\), \(\pmap\tpara{T}(\Xg) = \pmap(\Xg)|_{\ms{B
 \label{Ex::pmap}
 \end{defn}
 
+\ind \tr{revise assumption \ref{Ex::Eassu}. Make it as simple as possible for lemma 6.4 to hold. I only use this assumption for lemma \ref{Ex::leftmod}}
+
 \begin{assu}
 Let \(G\) satisfy assumption \ref{a::gbasics}, however assumptions \ref{a::pbasics} and \ref{a::admissible} need not hold. Let \(A\) be any finite set, and define the set \(U\) such that \(A\subseteq U \subseteq V\). Let \(\Xg\) be an \(\sta^U\)-valued c\`adl\`ag stochastic process on \((0,\infty)\). For each \(v\in U\), \(\pmap\vpara{v}(\Xg)\) has an \(\Xg\vind{A}\)-predictable intensity, \(\ratee\vpara{v}\), and there exists a constant \(C < \infty\) such that \(\sup_{v\in U}\sup_{t\in \mb{R}^+}\sum_{i \in \sta} \ratee\vpara{v}(t,i) \leq C\). Furthermore, \(f\tpara{t}: \cad([0,t),\sta^{|A|})\times \sta\ra[0,C]\) is a sequence of mappings such that for all \(\Xh \in \cad([0,\infty),\sta^{|A|})\), if \(t\in (0,\infty)\) is a continuity point of \(\Xh\), then \(t\) is a continuity point of \(s \mapsto f\tpara{s}(\Xh\tmi{[0,s)},z)\) for all \(z \in \sta\). \tr{Maybe move this technical assumption about \(f\) into section \ref{a::not}.}
 \label{Ex::Eassu}
@@ -529,7 +543,7 @@ This is Lemma 5.3 from the main paper.
 
 Now we need a simple method to know when the conditional expectation has a left-continuous modification. The following lemma, although a technical lemma, may be more broadly useful. It is also later applied in the proof of uniqueness.
 
-
+\ind \tr{Revise and simplify the statement lemma \ref{Ex::leftmod} as much as possible.}
 \begin{lem}
 Suppose Assumption \ref{Ex::Eassu} holds. Let \(\mm = \law(\Xg)\) and \(W\subseteq A \subseteq U\subseteq V\). Let \(W'\subseteq A\) be such that \(|W'| = |W|\), and suppose there is a natural association between elements of \(W'\) and \(W\). For any \(i \in \sta\), let
 
@@ -544,7 +558,7 @@ Lemma 5.4 of the main paper is extremely similar to this Lemma. I can go back an
 
 \begin{proof}[Proof of Theorem \ref{Main::Main} Existence]
 
-Let \((G,\Xf)\) be a process and graph satisfying assumption \ref{a::admissible}. Let \(\ev{v} \in \sta^V\) denote the standard basis vector of \(\sta^V\). That is, \(\ev{v}\vind{u} = \mb{I}_{u=v}\). By Theorem \ref{WP::WP}, \(\Xf\) is the unique solution to,
+Let \((G,\Xf)\) be a process and graph satisfying assumptions \ref{a::admissible} and \ref{a::padmin}. Let \(\ev{v} \in \sta^V\) denote the standard basis vector of \(\sta^V\). That is, \(\ev{v}\vind{u} = \mb{I}_{u=v}\). By Theorem \ref{WP::WP}, \(\Xf\) is the unique solution to,
 
 \[\Xf\tme{t} = \Xf\tme{0} + \sum_{v \in V}\ev{v}\int_\sta\int_{(0,t]\times (0,\infty)} i\mb{I}_{r \leq \rate\gvpara{G}{v}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di).\]
 
@@ -597,7 +611,9 @@ where
 \section{Proof of Uniqueness}
 \label{Uq}
 
-Let \((\mm,\Xg)\) be a solution to the local equations (\eqref{Main::local}-\eqref{Main::fixed}). Assume that for every \(U,U' \subseteq A\) such that \(\{U,U',\dgneigh{A}{U}\}\) is a partition of \(A\) and \(t \in [0,\infty)\),
+Let \((G,\Xf\gind{G})\) satisfy assumptions \ref{a::admissible} and \ref{a::padmin}. Let \(\rate\) be defined by \(\Xf\), and let \(\m = \law(\Xf)\).
+
+\ind Let \((\mm,\Xg)\) be a solution to the local equations (\eqref{Main::local}-\eqref{Main::fixed}). Assume that for every \(U,U' \subseteq A\) such that \(\{U,U',\dgneigh{A}{U}\}\) is a partition of \(A\) and \(t \in [0,\infty)\),
 
 \[\Xg\vind{U}\tmi{[0,t)} \perp \Xg\vind{U'}\tmi{[0,t)} |\Xg\vind{\dgneigh{A}{U}}\tmi{[0,t)}.\]
 
@@ -690,7 +706,7 @@ For all \(j \in \{1,\dots,\psize\}\), \(\proj\psf\vpara{\phi_j\left(C_j\cup\dgne
 \label{Uq::marg2eqn}
 \end{equation}
 
-where \(\rate,\brate,\bgrate\) and \(\bcrate\) are as defined in lemma \ref{Uq::marg}, theorem \ref{Main::Main}, assumption \ref{a::pbasics} and assumption \ref{a::admissible}.
+where \(\rate,\brate,\bgrate\) and \(\bcrate\) are as defined in lemma \ref{Uq::marg}, theorem \ref{Main::Main}, assumption \ref{a::pbasics}, assumption \ref{a::admissible} and assumption \ref{a::padmin}.
 \label{Uq::marg2}
 \end{lem}
 \begin{proof}
@@ -875,7 +891,7 @@ Let \(\mmm\indx{k} \defeq \mmm\vpara{A\indx{k}}\) for all \(k\in \mb{N}\). I cla
 
 \[\dense\indx{k}\tpara{t}(\xg\indx{k}) = \frac{d\mm\indx{k}\tpara{0}}{d\mmm\indx{k}\tpara{0}}\exp\left(\sum_{j=1}^{\psize\indx{k}}\sum_{v\in \dgneigh{G}{B_j\indx{k}}} \ds\vpara{v}\tpara{t}\left(\xg\indx{k}\vind{\dgneigh{G}{B_j}},\brate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right) + \sum_{v \in A\indx{k-1}} \ds\vpara{v}\tpara{t}\left(\xg\indx{k}\vind{\cl{v}},\rate\gvpara{A\indx{k}}{v}\stpara{\cdot}\right)\right),\]
 
-where \(\brate\) is defined as in the statement of lemma \ref{Uq::ext}. To prove this, we first need to understand some properties of \(\mdense\). Fix some \(j \in \{1,\dots,\psize\indx{k}\}\). Let \(j' = j\indx{k}_j\) (as defined in definition \ref{Uq::Extnot}). Let \(\phi = \phi\indx{k}_j\). Applying substitution,
+where \(\brate\) is defined as in the statement of lemma \ref{Uq::ext}. To prove this, we first need to understand some properties of \(\mdense\). Fix some \(j \in \{1,\dots,\psize\indx{k}\}\). Let \(j' = j\indx{k}_j\) (as defined in definition \ref{Uq::Extnot}). Let \(\phi = \phi\indx{k}_j\). Applying substitution, assumptions \ref{a::pbasics}, \ref{a::admissible} and \ref{a::padmin},
 
 \begin{align*}
 \mdense\jpara{j'}\tpara{t}\left(\xg\indx{k+1}\vind{C_j\indx{k}};\xg\indx{k+1}\vind{\dgneigh{G}{B\indx{k}_j}}\right) &= \frac{d\mm\vpara{\phi_{j'}(C_{j'})}\tpara{0}}{d\mmm\vpara{\phi_{j'}(C_{j'})}\tpara{0}}(\xg\indx{k+1}\vind{C\indx{k}_j})\exp\Bigg(\sum_{j'' = 1}^{\psize}\sum_{v \in C_j\indx{k}\cap\phi^{-1}(\gneigh{G}{B_{j''}})} \ds\vpara{v}\tpara{t}\left(\xg\indx{k+1}\vind{C_j\indx{k}\cap\phi^{-1}(\dgneigh{G}{B_{j''}})};\xg\indx{k+1}\vind{\dgneigh{G}{B_j\indx{k}}\cap\phi^{-1}(\dgneigh{G}{B_{j''}})},\brate\gvpara{A\indx{k+1}}{v}\stpara{\cdot}\right)\\
@@ -950,7 +966,37 @@ This proves that \(\proj\tparapsf{t}\vpara{A\indx{k-1}}(\mm\indx{k}\tpara{t}) = 
 That concludes the proof.
 \end{proof}
 
-\tr{The remainder of the proof should be exactly the same as the regular tree case.}
+\tr{The remainder of the proof is the same as in the main paper, so for now I'll only include an outline.}
+
+For any finite \(U \subset V\), there exists a \(k\) such that \(U \subseteq A\indx{k}\). We can define \(\mm\vpara{U} \defeq \proj\tparapsf{t}\vpara{U}(\mm\indx{k}\tpara{t})\). By lemma \ref{Uq::ext}, this definition is well-defined and independent of our choice of \(k\). By the Danielle-Kolmogorov Extension theorem \tr{(lemma C.11 of the main paper)}, there exists a unique measure \(\mm\vpara{V} \in \pmsr(\Omega\vpara{V})\) such that \(\proj\psf\vpara{U}(\mm\vpara{V}) = \mm\vpara{U}\) for all finite sets \(U\subseteq V\).
+
+\ind Consider a probability space with canonical process \(\Xg\) such that \(\pr(\Xg \in \cdot) = \mm\vpara{V}(\cdot)\). By lemma \ref{Uq::ext}, we know that \(\Xg\vind{A\indx{k}} \sim \mm\indx{k}\) for all \(k\). Using a method analogous to the one used to prove \cite[Proposition 14.7.1]{DalVer08} (see \tr{lemmas C.9,C.10, 5.12 and the prelude to 5.12 in the main paper}), we can construct two sequences of i.i.d. poisson processes, \(\{\poiss\poissv{v}:v \in V\}\) and \(\{\alt{\poiss}\poissv{v}:v \in V\}\) such that 
+
+\begin{enumerate}
+\item They each have intensity measure \(\leb\times\Sm\).
+
+\item For any \(k \in \mb{N}\), \(\{\poiss\poiss{v},\alt{\poiss}\poissv{u}: v \in A\indx{k-1},u\in A\indx{k}\setminus A\indx{k-1}\}\) is also an i.i.d. sequence.
+
+\item For every \(k\), \(\Xg\vind{A\indx{k}}\) is the almost surely unique solution to 
+
+\begin{equation}
+\Xg\vind{v}\tme{t} = \Xg\vind{v}\tme{0} + 
+\begin{cases}
+\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \brate\gvpara{A\indx{k}}{v}\stpara{i}\tme{s}}\,\alt{\poiss}\poissv{v}(dr,ds,di)& \te{ if } v \in A\indx{k}\setminus A\indx{k-1}\\
+\int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \rate\gvpara{A\indx{k}}{v}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di)&\te{ if } v \in A\indx{k-1}
+\end{cases}.
+\label{Uq::extcomb}
+\end{equation}
+
+For any \(v \in V\), there exists a \(k\) such that \(\cl{v}\subseteq A\indx{k}\). Then,
+
+\begin{align*}
+\Xg\vind{v}\tme{t} &= \Xg\vind{v}\tme{0} + \int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \rate\gvpara{A\indx{k}}{v}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di)\\
+&=\Xg\vind{v}\tme{0} + \int_\sta\int_{(0,t]\times(0,\infty)} \mb{I}_{r \leq \rate\gvpara{G}{v}\stpara{i}\tme{s}}\,\poiss\poissv{v}(dr,ds,di).
+\end{align*}
+
+Since this holds for all \(v \in V\), we can conclude that \(\Xg\) is an almost sure solution to equation \eqref{p::Xf}. However, by theorem \ref{WP::WP} \tr{(actually conjecture)}, there is a unique strong solution to this equation. Thus, \(\Xg \sim \m\). But, by assumption, \(\Xg\sim \mm\vpara{V}\). Thus, \(\mm\vpara{V} = \m\), and \(\mm = \m\vpara{A}\).
+\end{enumerate}
 
 \newpage
 \bibliographystyle{plain}
